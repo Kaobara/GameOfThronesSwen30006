@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("serial")
 public class GameOfThrones extends CardGame {
     private GoTCard gotCard = new GoTCard();
+    private GoTPiles gotPiles = new GoTPiles();
 
     private final String version = "1.0";
     public final int nbPlayers = 4;
@@ -26,12 +27,6 @@ public class GameOfThrones extends CardGame {
     private final int handWidth = 400;
     private final int pileWidth = 40;
     private Deck deck = new Deck(GoTCard.Suit.values(), GoTCard.Rank.values(), "cover");
-    private final Location[] handLocations = {
-            new Location(350, 625),
-            new Location(75, 350),
-            new Location(350, 75),
-            new Location(625, 350)
-    };
 
     private final Location[] scoreLocations = {
             new Location(575, 675),
@@ -39,20 +34,24 @@ public class GameOfThrones extends CardGame {
             new Location(25, 25),
             new Location(575, 125)
     };
-    private final Location[] pileLocations = {
-            new Location(350, 280),
-            new Location(350, 430)
-    };
     private final Location[] pileStatusLocations = {
             new Location(250, 200),
             new Location(250, 520)
     };
 
     private Actor[] pileTextActors = { null, null };
+
+    public Actor[] getPileTextActors() {
+        return pileTextActors;
+    }
+    public String[] getPlayerTeams() {
+        return playerTeams;
+    }
+
     private Actor[] scoreActors = {null, null, null, null};
     private final int watchingTime = 5000;
     private Hand[] hands;
-    private Hand[] piles;
+//    private Hand[] piles;
     private final String[] playerTeams = { "[Players 0 & 2]", "[Players 1 & 3]"};
 //    private int nextStartingPlayer = random.nextInt(nbPlayers);
     private int nextStartingPlayer = gotCard.random.nextInt(nbPlayers);
@@ -63,8 +62,8 @@ public class GameOfThrones extends CardGame {
     Font smallFont = new Font("Arial", Font.PLAIN, 10);
 
     //boolean[] humanPlayers = { true, true, true, true};
-//    boolean[] humanPlayers = { true, false, false, false};
-    boolean[] humanPlayers = { false, false, false, false};
+    boolean[] humanPlayers = { true, false, false, false};
+//    boolean[] humanPlayers = { false, false, false, false};
 
 
     private void initScore() {
@@ -103,94 +102,38 @@ public class GameOfThrones extends CardGame {
     private final int ATTACK_RANK_INDEX = 0;
     private final int DEFENCE_RANK_INDEX = 1;
 
+    private final GameLogic gameLogic = new GameLogic();
+    private final GameGraphic gameGraphic = new GameGraphic();
+
     public void setSelected(Optional<Card> selected) {
         this.selected = selected;
     }
 
-    //    public void setupHandHumanInteraction(Optional<Card> selected, Hand[] hands) {
-//        for (final Hand currentHand : hands) {
-//
-//            // Set up human player for interaction
-//
-//            currentHand.addCardListener(new CardAdapter() {
-//                public void leftDoubleClicked(Card card) {
-//                    selected = Optional.of(card);
-//                    currentHand.setTouchEnabled(false);
-//                }
-//                public void rightClicked(Card card) {
-//                    selected = Optional.empty(); // Don't care which card we right-clicked for player to pass
-//                    currentHand.setTouchEnabled(false);
-//                }
-//            });
-//        }
-//    }
+    public Optional<Card> getSelected() {
+        return selected;
+    }
 
-//    hands = new Hand[nbPlayers];
+    public void setSelectedPileIndex(int selectedPileIndex) {
+        this.selectedPileIndex = selectedPileIndex;
+    }
+
+    public int getSelectedPileIndex() {
+        return selectedPileIndex;
+    }
+
+    public int getATTACK_RANK_INDEX() {
+        return ATTACK_RANK_INDEX;
+    }
+
+    public int getDEFENCE_RANK_INDEX() {
+        return DEFENCE_RANK_INDEX;
+    }
+
     private void setupGame() {
         hands = new Hand[nbPlayers];
-//        for (int i = 0; i < nbPlayers; i++) {
-//            hands[i] = new Hand(deck);
-//        }
-//        gotCard.dealingOut(hands, nbPlayers, nbStartCards);
-//
-//        for (int i = 0; i < nbPlayers; i++) {
-//            hands[i].sort(Hand.SortType.SUITPRIORITY, true);
-//            System.out.println("hands[" + i + "]: " + gotCard.canonical(hands[i]));
-//        }
-
-        GameLogic gameLogic = new GameLogic();
         gameLogic.setupHands(hands, deck, nbPlayers, nbStartCards, gotCard);
         gameLogic.setupHandHumanInteraction(this, hands);
-
-//        // FOR HUMAN INTERACTION
-//        for (final Hand currentHand : hands) {
-////             Set up human player for interaction
-//            currentHand.addCardListener(new CardAdapter() {
-//                public void leftDoubleClicked(Card card) {
-//                    selected = Optional.of(card);
-//                    currentHand.setTouchEnabled(false);
-//                }
-//                public void rightClicked(Card card) {
-//                    selected = Optional.empty(); // Don't care which card we right-clicked for player to pass
-//                    currentHand.setTouchEnabled(false);
-//                }
-//            });
-//        }
-        // graphics
-        RowLayout[] layouts = new RowLayout[nbPlayers];
-        for (int i = 0; i < nbPlayers; i++) {
-            layouts[i] = new RowLayout(handLocations[i], handWidth);
-            layouts[i].setRotationAngle(90 * i);
-            hands[i].setView(this, layouts[i]);
-            hands[i].draw();
-        }
-        // End graphics
-    } // LOGIC FINE, LEAVE IT
-
-    private void resetPile() {
-        if (piles != null) {
-            for (Hand pile : piles) {
-                pile.removeAll(true);
-            }
-        }
-        piles = new Hand[2];
-        for (int i = 0; i < 2; i++) {
-            piles[i] = new Hand(deck);
-            piles[i].setView(this, new RowLayout(pileLocations[i], 8 * pileWidth));
-            piles[i].draw();
-            final Hand currentPile = piles[i];
-            final int pileIndex = i;
-
-            //setup player interaction
-            piles[i].addCardListener(new CardAdapter() {
-                public void leftClicked(Card card) {
-                    selectedPileIndex = pileIndex;
-                    currentPile.setTouchEnabled(false);
-                }
-            });
-        }
-
-        updatePileRanks();
+        gameGraphic.setupHandGraphic(this, hands, nbPlayers);
     }
 
     private void pickACorrectSuit(int playerIndex, boolean isCharacter) {
@@ -241,36 +184,14 @@ public class GameOfThrones extends CardGame {
 
     private void waitForPileSelection() {
         selectedPileIndex = NON_SELECTION_VALUE;
-        for (Hand pile : piles) {
+        for (Hand pile : gotPiles.getPiles()) {
             pile.setTouchEnabled(true);
         }
         while(selectedPileIndex == NON_SELECTION_VALUE) {
             delay(100);
         }
-        for (Hand pile : piles) {
+        for (Hand pile : gotPiles.getPiles()) {
             pile.setTouchEnabled(false);
-        }
-    }
-
-    private int[] calculatePileRanks(int pileIndex) {
-        Hand currentPile = piles[pileIndex];
-        int i = currentPile.isEmpty() ? 0 : ((GoTCard.Rank) currentPile.get(0).getRank()).getRankValue();
-        return new int[] { i, i };
-    }
-
-    private void updatePileRankState(int pileIndex, int attackRank, int defenceRank) {
-        TextActor currentPile = (TextActor) pileTextActors[pileIndex];
-        removeActor(currentPile);
-        String text = playerTeams[pileIndex] + " Attack: " + attackRank + " - Defence: " + defenceRank;
-        pileTextActors[pileIndex] = new TextActor(text, Color.WHITE, bgColor, smallFont);
-        addActor(pileTextActors[pileIndex], pileStatusLocations[pileIndex]);
-    }
-
-    private void updatePileRanks() {
-        for (int j = 0; j < piles.length; j++) {
-            int[] ranks = calculatePileRanks(j);
-            System.out.println(ranks[ATTACK_RANK_INDEX]);
-            updatePileRankState(j, ranks[ATTACK_RANK_INDEX], ranks[DEFENCE_RANK_INDEX]);
         }
     }
 
@@ -279,34 +200,38 @@ public class GameOfThrones extends CardGame {
     }
 
     private void executeAPlay() {
-        resetPile();
+//        gotPiles.resetPile(this, deck);
+//
+//        // Check Hands has hearts (important for final play)
+//        nextStartingPlayer = getPlayerIndex(nextStartingPlayer);
+//        if (hands[nextStartingPlayer].getNumberOfCardsWithSuit(GoTCard.Suit.HEARTS) == 0)
+//            nextStartingPlayer = getPlayerIndex(nextStartingPlayer + 1);
+//        assert hands[nextStartingPlayer].getNumberOfCardsWithSuit(GoTCard.Suit.HEARTS) != 0 : " Starting player has no hearts.";
+//
+//        // 1: play the first 2 hearts
+//        for (int i = 0; i < 2; i++) {
+//            int playerIndex = getPlayerIndex(nextStartingPlayer + i);
+//            setStatusText("Player " + playerIndex + " select a Heart card to play");
+//
+//            // if humanPlayer = true, wait for correct suit
+//            if (humanPlayers[playerIndex]) {
+//                waitForCorrectSuit(playerIndex, true);
+//                // else bot logic
+//            } else {
+//                pickACorrectSuit(playerIndex, true);
+//            }
+//
+//            int pileIndex = playerIndex % 2;
+//            assert selected.isPresent() : " Pass returned on selection of character.";
+//            System.out.println("Player " + playerIndex + " plays " + gotCard.canonical(selected.get()) + " on pile " + pileIndex);
+//            selected.get().setVerso(false);
+//            selected.get().transfer(gotPiles.getPiles()[pileIndex], true); // transfer to pile (includes graphic effect)
+////                    piles[pileIndex], true); // transfer to pile (includes graphic effect)
+//            gotPiles.updatePileRanks(this);
+////            updatePileRanks();
+//        }
 
-        // Check Hands has hearts (important for final play)
-        nextStartingPlayer = getPlayerIndex(nextStartingPlayer);
-        if (hands[nextStartingPlayer].getNumberOfCardsWithSuit(GoTCard.Suit.HEARTS) == 0)
-            nextStartingPlayer = getPlayerIndex(nextStartingPlayer + 1);
-        assert hands[nextStartingPlayer].getNumberOfCardsWithSuit(GoTCard.Suit.HEARTS) != 0 : " Starting player has no hearts.";
-
-        // 1: play the first 2 hearts
-        for (int i = 0; i < 2; i++) {
-            int playerIndex = getPlayerIndex(nextStartingPlayer + i);
-            setStatusText("Player " + playerIndex + " select a Heart card to play");
-
-            // if humanPlayer = true, wait for correct suit
-            if (humanPlayers[playerIndex]) {
-                waitForCorrectSuit(playerIndex, true);
-                // else bot logic
-            } else {
-                pickACorrectSuit(playerIndex, true);
-            }
-
-            int pileIndex = playerIndex % 2;
-            assert selected.isPresent() : " Pass returned on selection of character.";
-            System.out.println("Player " + playerIndex + " plays " + gotCard.canonical(selected.get()) + " on pile " + pileIndex);
-            selected.get().setVerso(false);
-            selected.get().transfer(piles[pileIndex], true); // transfer to pile (includes graphic effect)
-            updatePileRanks();
-        }
+        gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, deck, hands);
 
 
         // 2: play the remaining nbPlayers * nbRounds - 2
@@ -337,8 +262,10 @@ public class GameOfThrones extends CardGame {
 
                 // REQUIRES OBSERVER IF SELECTED == DIAMOND FOR SNART BOTS
 
-                selected.get().transfer(piles[selectedPileIndex], true); // transfer to pile (includes graphic effect)
-                updatePileRanks();
+                selected.get().transfer(gotPiles.getPiles()[selectedPileIndex], true);   // transfer to pile (includes graphic effect)
+//                        piles[selectedPileIndex], true); // transfer to pile (includes graphic effect)
+                gotPiles.updatePileRanks(this);
+//                updatePileRanks();
             } else {
                 setStatusText("Pass.");
             }
@@ -347,15 +274,22 @@ public class GameOfThrones extends CardGame {
         }
 
         // 3: calculate winning & update scores for players
-        updatePileRanks();
-        int[] pile0Ranks = calculatePileRanks(0);
-        int[] pile1Ranks = calculatePileRanks(1);
-        System.out.println("piles[0]: " + gotCard.canonical(piles[0]));
+        gotPiles.updatePileRanks(this);
+//        updatePileRanks();
+        int[] pile0Ranks = gotPiles.calculatePileRanks(0);
+//                calculatePileRanks(0);
+        int[] pile1Ranks = gotPiles.calculatePileRanks(1);
+//                calculatePileRanks(1);
+        System.out.println("piles[0]: " + gotCard.canonical(gotPiles.getPiles()[0]));
+//                piles[0]));
         System.out.println("piles[0] is " + "Attack: " + pile0Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile0Ranks[DEFENCE_RANK_INDEX]);
-        System.out.println("piles[1]: " + gotCard.canonical(piles[1]));
+        System.out.println("piles[1]: " + gotCard.canonical(gotPiles.getPiles()[0]));
+//                piles[1]));
         System.out.println("piles[1] is " + "Attack: " + pile1Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile1Ranks[DEFENCE_RANK_INDEX]);
-        GoTCard.Rank pile0CharacterRank = (GoTCard.Rank) piles[0].getCardList().get(0).getRank();
-        GoTCard.Rank pile1CharacterRank = (GoTCard.Rank) piles[1].getCardList().get(0).getRank();
+        GoTCard.Rank pile0CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[0].getCardList().get(0).getRank();
+//                piles[0].getCardList().get(0).getRank();
+        GoTCard.Rank pile1CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[1].getCardList().get(0).getRank();
+//                piles[1].getCardList().get(0).getRank();
         String character0Result;
         String character1Result;
 
