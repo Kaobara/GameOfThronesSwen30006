@@ -6,16 +6,16 @@ import ch.aplu.jcardgame.*;
 import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
 import ch.aplu.jgamegrid.TextActor;
+import utility.PropertiesLoader;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
 public class GameOfThrones extends CardGame {
+    public static Player[] players = {null, null, null, null};
     private GoTCard gotCard = new GoTCard();
     private GoTPiles gotPiles = new GoTPiles();
 
@@ -91,6 +91,8 @@ public class GameOfThrones extends CardGame {
         System.out.println(playerTeams[0] + " score = " + scores[0] + "; " + playerTeams[1] + " score = " + scores[1]);
     }
 
+    private PlayerFactory playerFactory = new PlayerFactory();
+
     private Optional<Card> selected;
     private final int NON_SELECTION_VALUE = -1;
     private int selectedPileIndex = NON_SELECTION_VALUE;
@@ -149,6 +151,10 @@ public class GameOfThrones extends CardGame {
 
         setTitle("Game of Thrones (V" + version + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
         setStatusText("Initializing...");
+
+        for(int i = 0; i<nbPlayers; i++) {
+            players[i] = playerFactory.getPlayer(playerTypes[i]);
+        }
         initScore();
 
         setupGame();
@@ -176,24 +182,39 @@ public class GameOfThrones extends CardGame {
         refresh();
     }
 
+    public static final String DEFAULT_PROPERTIES_PATH = "properties/got.properties";
+
+    public static String[] playerTypes;
+
     public static void main(String[] args) {
-        // System.out.println("Working Directory = " + System.getProperty("user.dir"));
-        // final Properties properties = new Properties();
-        // properties.setProperty("watchingTime", "5000");
-        /*
+        String propertiesPath = DEFAULT_PROPERTIES_PATH;
+
+         System.out.println("Working Directory = " + System.getProperty("user.dir"));
+         Properties properties = new Properties();
+         properties.setProperty("watchingTime", "5000");
+//        /*
         if (args == null || args.length == 0) {
-            //  properties = PropertiesLoader.loadPropertiesFile("cribbage.properties");
+              properties = PropertiesLoader.loadPropertiesFile(DEFAULT_PROPERTIES_PATH);
         } else {
-            //  properties = PropertiesLoader.loadPropertiesFile(args[0]);
+              properties = PropertiesLoader.loadPropertiesFile(args[0]);
         }
 
-        String seedProp = properties.getProperty("seed");  //Seed property
-        if (seedProp != null) { // Use property seed
-			  seed = Integer.parseInt(seedProp);
-        } else { // and no property
-			  seed = new Random().nextInt(); // so randomise
+        playerTypes = new String[4];
+        for(int i = 0; i<4; i++) {
+            playerTypes[i] = properties.getProperty("players."+i);
         }
-        */
+
+        for(int i = 0; i<4; i++) {
+            System.out.println(playerTypes[i]);
+        }
+
+//        String seedProp = properties.getProperty("seed");  //Seed property
+////        if (seedProp != null) { // Use property seed
+////			  seed = Integer.parseInt(seedProp);
+////        } else { // and no property
+////			  seed = new Random().nextInt(); // so randomise
+////        }
+//        */
 //        GameOfThrones.seed = 130006;
 //        System.out.println("Seed = " + seed);
 //        GameOfThrones.random = new Random(seed);
