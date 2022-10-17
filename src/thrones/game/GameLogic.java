@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class GameLogic {
-    public void setupHands(Hand[] hands, Deck deck, int nbPlayers, int nbStartCards, GoTCard gotCard) {
+    public void setupHands(Hand[] hands, Deck deck, int nbPlayers, GoTCard gotCard) {
         for (int i = 0; i < nbPlayers; i++) {
             hands[i] = new Hand(deck);
         }
@@ -41,7 +41,11 @@ public class GameLogic {
     }
 
     private int nbPlayers = 4;
+    private int nbRounds = 3;
+    private int nbStartCards = 9;
     private int NON_SELECTION_VALUE = -1;
+    private final int ATTACK_RANK_INDEX = 0;
+    private final int DEFENCE_RANK_INDEX = 1;
 
     private int getPlayerIndex(int index) {
         return index % nbPlayers;
@@ -166,7 +170,7 @@ public class GameLogic {
 
     }
 
-    public void part2(GameOfThrones gameOfThrones, int nbRounds, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands, boolean[] humanPlayers) {
+    public void part2(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands, boolean[] humanPlayers) {
         // 2: play the remaining nbPlayers * nbRounds - 2
         int remainingTurns = nbPlayers * nbRounds - 2;
         int nextPlayer = nextStartingPlayer + 2;
@@ -209,6 +213,54 @@ public class GameLogic {
             nextPlayer++;
             remainingTurns--;
         }
+    }
+
+    public void part3(GameOfThrones gameOfThrones, GoTCard gotCard, GoTPiles gotPiles, int[] scores ) {
+        // 3: calculate winning & update scores for players
+        gotPiles.updatePileRanks(gameOfThrones);
+//        updatePileRanks();
+        int[] pile0Ranks = gotPiles.calculatePileRanks(0);
+//                calculatePileRanks(0);
+        int[] pile1Ranks = gotPiles.calculatePileRanks(1);
+//                calculatePileRanks(1);
+        System.out.println("piles[0]: " + gotCard.canonical(gotPiles.getPiles()[0]));
+//                piles[0]));
+        System.out.println("piles[0] is " + "Attack: " + pile0Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile0Ranks[DEFENCE_RANK_INDEX]);
+        System.out.println("piles[1]: " + gotCard.canonical(gotPiles.getPiles()[0]));
+//                piles[1]));
+        System.out.println("piles[1] is " + "Attack: " + pile1Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile1Ranks[DEFENCE_RANK_INDEX]);
+        GoTCard.Rank pile0CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[0].getCardList().get(0).getRank();
+//                piles[0].getCardList().get(0).getRank();
+        GoTCard.Rank pile1CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[1].getCardList().get(0).getRank();
+//                piles[1].getCardList().get(0).getRank();
+        String character0Result;
+        String character1Result;
+
+        // determine winner
+        if (pile0Ranks[ATTACK_RANK_INDEX] > pile1Ranks[DEFENCE_RANK_INDEX]) {
+            scores[0] += pile1CharacterRank.getRankValue();
+            scores[2] += pile1CharacterRank.getRankValue();
+            character0Result = "Character 0 attack on character 1 succeeded.";
+        } else {
+            scores[1] += pile1CharacterRank.getRankValue();
+            scores[3] += pile1CharacterRank.getRankValue();
+            character0Result = "Character 0 attack on character 1 failed.";
+        }
+
+        if (pile1Ranks[ATTACK_RANK_INDEX] > pile0Ranks[DEFENCE_RANK_INDEX]) {
+            scores[1] += pile0CharacterRank.getRankValue();
+            scores[3] += pile0CharacterRank.getRankValue();
+            character1Result = "Character 1 attack on character 0 succeeded.";
+        } else {
+            scores[0] += pile0CharacterRank.getRankValue();
+            scores[2] += pile0CharacterRank.getRankValue();
+            character1Result = "Character 1 attack character 0 failed.";
+        }
+
+        gameOfThrones.updateScores();
+        System.out.println(character0Result);
+        System.out.println(character1Result);
+        gameOfThrones.setStatusText(character0Result + " " + character1Result);
     }
 
 

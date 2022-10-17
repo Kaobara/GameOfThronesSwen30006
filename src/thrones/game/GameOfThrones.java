@@ -19,11 +19,9 @@ public class GameOfThrones extends CardGame {
     private GoTCard gotCard = new GoTCard();
     private GoTPiles gotPiles = new GoTPiles();
 
-    private final String version = "1.0";
+    private final String version = "2.0";
     public final int nbPlayers = 4;
-    public final int nbStartCards = 9;
 	public final int nbPlays = 6;
-	public final int nbRounds = 3;
     private Deck deck = new Deck(GoTCard.Suit.values(), GoTCard.Rank.values(), "cover");
 
     private final Location[] scoreLocations = {
@@ -86,7 +84,7 @@ public class GameOfThrones extends CardGame {
         addActor(scoreActors[player], scoreLocations[player]);
     }
 
-    private void updateScores() {
+    public void updateScores() {
         for (int i = 0; i < nbPlayers; i++) {
             updateScore(i);
         }
@@ -129,210 +127,62 @@ public class GameOfThrones extends CardGame {
 
     private void setupGame() {
         hands = new Hand[nbPlayers];
-        gameLogic.setupHands(hands, deck, nbPlayers, nbStartCards, gotCard);
+        gameLogic.setupHands(hands, deck, nbPlayers, gotCard);
         gameLogic.setupHandHumanInteraction(this, hands);
         gameGraphic.setupHandGraphic(this, hands, nbPlayers);
     }
 
-    private void pickACorrectSuit(int playerIndex, boolean isCharacter) {
-        Hand currentHand = hands[playerIndex];
-        List<Card> shortListCards = new ArrayList<>();
-        for (int i = 0; i < currentHand.getCardList().size(); i++) {
-            Card card = currentHand.getCardList().get(i);
-            GoTCard.Suit suit = (GoTCard.Suit) card.getSuit();
-            if (suit.isCharacter() == isCharacter) {
-                shortListCards.add(card);
-            }
-        }
-        if (shortListCards.isEmpty() || !isCharacter && gotCard.random.nextInt(3) == 0) {
-            selected = Optional.empty();
-        } else {
-            selected = Optional.of(shortListCards.get(gotCard.random.nextInt(shortListCards.size())));
-        }
-    }
-
-    private void selectRandomPile(Optional<Card> selected) {
-        int tempSelectedPileIndex = gotCard.random.nextInt(2);
-        System.out.println(gotPiles.getPiles()[tempSelectedPileIndex].getLast().getSuit() + " JSDLIFJD");
-
-
-        if(gotPiles.getPiles()[tempSelectedPileIndex].getLast().getSuit() == GoTCard.Suit.HEARTS && selected.get().getSuit() == GoTCard.Suit.DIAMONDS) {
-            System.out.println("AAA");
-            selectedPileIndex = NON_SELECTION_VALUE;
-        } else {
-            selectedPileIndex = tempSelectedPileIndex;
-        }
-
-
-//        selectedPileIndex = gotCard.random.nextInt(2);
-    }
-
-    private void waitForCorrectSuit(int playerIndex, boolean isCharacter) {
-        if (hands[playerIndex].isEmpty()) {
-            selected = Optional.empty();
-        } else {
-            selected = null;
-            hands[playerIndex].setTouchEnabled(true);
-            do {
-                if (selected == null) {
-                    delay(100);
-                    continue;
-                }
-                GoTCard.Suit suit = selected.isPresent() ? (GoTCard.Suit) selected.get().getSuit() : null;
-                if (isCharacter && suit != null && suit.isCharacter() ||         // If we want character, can't pass and suit must be right
-                        !isCharacter && (suit == null || !suit.isCharacter())) { // If we don't want character, can pass or suit must not be character
-                    // if (suit != null && suit.isCharacter() == isCharacter) {
-                    break;
-                } else {
-                    selected = null;
-                    hands[playerIndex].setTouchEnabled(true);
-                }
-                delay(100);
-            } while (true);
-        }
-    }
-
-    private void waitForPileSelection() {
-        selectedPileIndex = NON_SELECTION_VALUE;
-        for (Hand pile : gotPiles.getPiles()) {
-            pile.setTouchEnabled(true);
-        }
-        while(selectedPileIndex == NON_SELECTION_VALUE) {
-            delay(100);
-        }
-        for (Hand pile : gotPiles.getPiles()) {
-            pile.setTouchEnabled(false);
-        }
-    }
-
-    private int getPlayerIndex(int index) {
-        return index % nbPlayers;
-    }
-
     private void executeAPlay() {
-//        gotPiles.resetPile(this, deck);
-//
-//        // Check Hands has hearts (important for final play)
-//        nextStartingPlayer = getPlayerIndex(nextStartingPlayer);
-//        if (hands[nextStartingPlayer].getNumberOfCardsWithSuit(GoTCard.Suit.HEARTS) == 0)
-//            nextStartingPlayer = getPlayerIndex(nextStartingPlayer + 1);
-//        assert hands[nextStartingPlayer].getNumberOfCardsWithSuit(GoTCard.Suit.HEARTS) != 0 : " Starting player has no hearts.";
-//
-//        // 1: play the first 2 hearts
-//        for (int i = 0; i < 2; i++) {
-//            int playerIndex = getPlayerIndex(nextStartingPlayer + i);
-//            setStatusText("Player " + playerIndex + " select a Heart card to play");
-//
-//            // if humanPlayer = true, wait for correct suit
-//            if (humanPlayers[playerIndex]) {
-//                waitForCorrectSuit(playerIndex, true);
-//                // else bot logic
-//            } else {
-//                pickACorrectSuit(playerIndex, true);
-//            }
-//
-//            int pileIndex = playerIndex % 2;
-//            assert selected.isPresent() : " Pass returned on selection of character.";
-//            System.out.println("Player " + playerIndex + " plays " + gotCard.canonical(selected.get()) + " on pile " + pileIndex);
-//            selected.get().setVerso(false);
-//            selected.get().transfer(gotPiles.getPiles()[pileIndex], true); // transfer to pile (includes graphic effect)
-////                    piles[pileIndex], true); // transfer to pile (includes graphic effect)
-//            gotPiles.updatePileRanks(this);
-////            updatePileRanks();
-//        }
-
         gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers);
 
-
-//        // 2: play the remaining nbPlayers * nbRounds - 2
-//        int remainingTurns = nbPlayers * nbRounds - 2;
-//        int nextPlayer = nextStartingPlayer + 2;
-//
-//        while(remainingTurns > 0) {
-//            nextPlayer = getPlayerIndex(nextPlayer);
-//            setStatusText("Player" + nextPlayer + " select a non-Heart card to play.");
-//            if (humanPlayers[nextPlayer]) {
-//                waitForCorrectSuit(nextPlayer, false);
-//            } else {
-//                pickACorrectSuit(nextPlayer, false);
-//            }
-//
-//            if (selected.isPresent()) {
-//                setStatusText("Selected: " + gotCard.canonical(selected.get()) + ". Player" + nextPlayer + " select a pile to play the card.");
-//                // Human
-//                if (humanPlayers[nextPlayer]) {
-//                    waitForPileSelection();
-//                } else {
-//                    // bot
-//                    selectRandomPile(selected);
-//                }
-//
-//                if(selectedPileIndex != NON_SELECTION_VALUE) {
-//                    System.out.println("Player " + nextPlayer + " plays " + gotCard.canonical(selected.get()) + " on pile " + selectedPileIndex);
-//                    selected.get().setVerso(false);
-//
-//
-//                    // REQUIRES OBSERVER IF SELECTED == DIAMOND FOR SNART BOTS
-//
-//                    selected.get().transfer(gotPiles.getPiles()[selectedPileIndex], true);   // transfer to pile (includes graphic effect)
-////                        piles[selectedPileIndex], true); // transfer to pile (includes graphic effect)
-//                    gotPiles.updatePileRanks(this);
-////                updatePileRanks();}
-//                }
-//            } else {
-//                setStatusText("Pass.");
-//            }
-//            nextPlayer++;
-//            remainingTurns--;
-//        }
-
-        gameLogic.part2(this, nbRounds, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers);
+        gameLogic.part2(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers);
 
         // 3: calculate winning & update scores for players
-        gotPiles.updatePileRanks(this);
-//        updatePileRanks();
-        int[] pile0Ranks = gotPiles.calculatePileRanks(0);
-//                calculatePileRanks(0);
-        int[] pile1Ranks = gotPiles.calculatePileRanks(1);
-//                calculatePileRanks(1);
-        System.out.println("piles[0]: " + gotCard.canonical(gotPiles.getPiles()[0]));
-//                piles[0]));
-        System.out.println("piles[0] is " + "Attack: " + pile0Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile0Ranks[DEFENCE_RANK_INDEX]);
-        System.out.println("piles[1]: " + gotCard.canonical(gotPiles.getPiles()[0]));
-//                piles[1]));
-        System.out.println("piles[1] is " + "Attack: " + pile1Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile1Ranks[DEFENCE_RANK_INDEX]);
-        GoTCard.Rank pile0CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[0].getCardList().get(0).getRank();
-//                piles[0].getCardList().get(0).getRank();
-        GoTCard.Rank pile1CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[1].getCardList().get(0).getRank();
-//                piles[1].getCardList().get(0).getRank();
-        String character0Result;
-        String character1Result;
-
-        // determine winner
-        if (pile0Ranks[ATTACK_RANK_INDEX] > pile1Ranks[DEFENCE_RANK_INDEX]) {
-            scores[0] += pile1CharacterRank.getRankValue();
-            scores[2] += pile1CharacterRank.getRankValue();
-            character0Result = "Character 0 attack on character 1 succeeded.";
-        } else {
-            scores[1] += pile1CharacterRank.getRankValue();
-            scores[3] += pile1CharacterRank.getRankValue();
-            character0Result = "Character 0 attack on character 1 failed.";
-        }
-
-        if (pile1Ranks[ATTACK_RANK_INDEX] > pile0Ranks[DEFENCE_RANK_INDEX]) {
-            scores[1] += pile0CharacterRank.getRankValue();
-            scores[3] += pile0CharacterRank.getRankValue();
-            character1Result = "Character 1 attack on character 0 succeeded.";
-        } else {
-            scores[0] += pile0CharacterRank.getRankValue();
-            scores[2] += pile0CharacterRank.getRankValue();
-            character1Result = "Character 1 attack character 0 failed.";
-        }
-
-        updateScores();
-        System.out.println(character0Result);
-        System.out.println(character1Result);
-        setStatusText(character0Result + " " + character1Result);
+//        gotPiles.updatePileRanks(this);
+////        updatePileRanks();
+//        int[] pile0Ranks = gotPiles.calculatePileRanks(0);
+////                calculatePileRanks(0);
+//        int[] pile1Ranks = gotPiles.calculatePileRanks(1);
+////                calculatePileRanks(1);
+//        System.out.println("piles[0]: " + gotCard.canonical(gotPiles.getPiles()[0]));
+////                piles[0]));
+//        System.out.println("piles[0] is " + "Attack: " + pile0Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile0Ranks[DEFENCE_RANK_INDEX]);
+//        System.out.println("piles[1]: " + gotCard.canonical(gotPiles.getPiles()[0]));
+////                piles[1]));
+//        System.out.println("piles[1] is " + "Attack: " + pile1Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile1Ranks[DEFENCE_RANK_INDEX]);
+//        GoTCard.Rank pile0CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[0].getCardList().get(0).getRank();
+////                piles[0].getCardList().get(0).getRank();
+//        GoTCard.Rank pile1CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[1].getCardList().get(0).getRank();
+////                piles[1].getCardList().get(0).getRank();
+//        String character0Result;
+//        String character1Result;
+//
+//        // determine winner
+//        if (pile0Ranks[ATTACK_RANK_INDEX] > pile1Ranks[DEFENCE_RANK_INDEX]) {
+//            scores[0] += pile1CharacterRank.getRankValue();
+//            scores[2] += pile1CharacterRank.getRankValue();
+//            character0Result = "Character 0 attack on character 1 succeeded.";
+//        } else {
+//            scores[1] += pile1CharacterRank.getRankValue();
+//            scores[3] += pile1CharacterRank.getRankValue();
+//            character0Result = "Character 0 attack on character 1 failed.";
+//        }
+//
+//        if (pile1Ranks[ATTACK_RANK_INDEX] > pile0Ranks[DEFENCE_RANK_INDEX]) {
+//            scores[1] += pile0CharacterRank.getRankValue();
+//            scores[3] += pile0CharacterRank.getRankValue();
+//            character1Result = "Character 1 attack on character 0 succeeded.";
+//        } else {
+//            scores[0] += pile0CharacterRank.getRankValue();
+//            scores[2] += pile0CharacterRank.getRankValue();
+//            character1Result = "Character 1 attack character 0 failed.";
+//        }
+//
+//        updateScores();
+//        System.out.println(character0Result);
+//        System.out.println(character1Result);
+//        setStatusText(character0Result + " " + character1Result);
+        gameLogic.part3(this, gotCard, gotPiles, scores);
 
         // 5: discarded all cards on the piles
         nextStartingPlayer += 1;
