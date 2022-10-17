@@ -41,6 +41,7 @@ public class GameLogic {
     }
 
     private int nbPlayers = 4;
+    private int NON_SELECTION_VALUE = -1;
 
     private int getPlayerIndex(int index) {
         return index % nbPlayers;
@@ -65,8 +66,21 @@ public class GameLogic {
         }
     }
 
-    private void selectRandomPile(GameOfThrones gameOfThrones, GoTCard gotCard) {
-        gameOfThrones.setSelectedPileIndex(gotCard.random.nextInt(2));
+    private void selectRandomPile(GameOfThrones gameOfThrones, GoTCard gotCard, GoTPiles gotPiles, Optional<Card> Selected) {
+//        gameOfThrones.setSelectedPileIndex(gotCard.random.nextInt(2));
+
+        int tempSelectedPileIndex = gotCard.random.nextInt(2);
+        System.out.println(gotPiles.getPiles()[tempSelectedPileIndex].getLast().getSuit() + " JSDLIFJD");
+
+
+        if(gotPiles.getPiles()[tempSelectedPileIndex].getLast().getSuit() == GoTCard.Suit.HEARTS && Selected.get().getSuit() == GoTCard.Suit.DIAMONDS) {
+            System.out.println("AAA");
+            gameOfThrones.setSelectedPileIndex(-1);
+        } else {
+            gameOfThrones.setSelectedPileIndex(tempSelectedPileIndex);
+        }
+
+
 //        selectedPileIndex = gotCard.random.nextInt(2);
     }
 
@@ -150,6 +164,51 @@ public class GameLogic {
 //            updatePileRanks();
         }
 
+    }
+
+    public void part2(GameOfThrones gameOfThrones, int nbRounds, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands, boolean[] humanPlayers) {
+        // 2: play the remaining nbPlayers * nbRounds - 2
+        int remainingTurns = nbPlayers * nbRounds - 2;
+        int nextPlayer = nextStartingPlayer + 2;
+
+        while(remainingTurns > 0) {
+            nextPlayer = getPlayerIndex(nextPlayer);
+            gameOfThrones.setStatusText("Player" + nextPlayer + " select a non-Heart card to play.");
+            if (humanPlayers[nextPlayer]) {
+                waitForCorrectSuit(nextPlayer, false, hands, gameOfThrones, gotCard);
+            } else {
+                pickACorrectSuit(nextPlayer, false, hands, gameOfThrones, gotCard);
+            }
+
+            if (gameOfThrones.getSelected().isPresent()) {
+                gameOfThrones.setStatusText("Selected: " + gotCard.canonical(gameOfThrones.getSelected().get()) + ". Player" + nextPlayer + " select a pile to play the card.");
+                // Human
+                if (humanPlayers[nextPlayer]) {
+                    waitForPileSelection(gameOfThrones, gotPiles);
+                } else {
+                    // bot
+
+                    selectRandomPile(gameOfThrones, gotCard, gotPiles, gameOfThrones.getSelected());
+                }
+
+                if(gameOfThrones.getSelectedPileIndex() != NON_SELECTION_VALUE) {
+                    System.out.println("Player " + nextPlayer + " plays " + gotCard.canonical(gameOfThrones.getSelected().get()) + " on pile " + gameOfThrones.getSelectedPileIndex());
+                    gameOfThrones.getSelected().get().setVerso(false);
+
+
+                    // REQUIRES OBSERVER IF SELECTED == DIAMOND FOR SNART BOTS
+
+                    gameOfThrones.getSelected().get().transfer(gotPiles.getPiles()[gameOfThrones.getSelectedPileIndex()], true);   // transfer to pile (includes graphic effect)
+//                        piles[selectedPileIndex], true); // transfer to pile (includes graphic effect)
+                    gotPiles.updatePileRanks(gameOfThrones);
+//                updatePileRanks();}
+                }
+            } else {
+                gameOfThrones.setStatusText("Pass.");
+            }
+            nextPlayer++;
+            remainingTurns--;
+        }
     }
 
 

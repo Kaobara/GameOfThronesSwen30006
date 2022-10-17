@@ -244,47 +244,49 @@ public class GameOfThrones extends CardGame {
         gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers);
 
 
-        // 2: play the remaining nbPlayers * nbRounds - 2
-        int remainingTurns = nbPlayers * nbRounds - 2;
-        int nextPlayer = nextStartingPlayer + 2;
+//        // 2: play the remaining nbPlayers * nbRounds - 2
+//        int remainingTurns = nbPlayers * nbRounds - 2;
+//        int nextPlayer = nextStartingPlayer + 2;
+//
+//        while(remainingTurns > 0) {
+//            nextPlayer = getPlayerIndex(nextPlayer);
+//            setStatusText("Player" + nextPlayer + " select a non-Heart card to play.");
+//            if (humanPlayers[nextPlayer]) {
+//                waitForCorrectSuit(nextPlayer, false);
+//            } else {
+//                pickACorrectSuit(nextPlayer, false);
+//            }
+//
+//            if (selected.isPresent()) {
+//                setStatusText("Selected: " + gotCard.canonical(selected.get()) + ". Player" + nextPlayer + " select a pile to play the card.");
+//                // Human
+//                if (humanPlayers[nextPlayer]) {
+//                    waitForPileSelection();
+//                } else {
+//                    // bot
+//                    selectRandomPile(selected);
+//                }
+//
+//                if(selectedPileIndex != NON_SELECTION_VALUE) {
+//                    System.out.println("Player " + nextPlayer + " plays " + gotCard.canonical(selected.get()) + " on pile " + selectedPileIndex);
+//                    selected.get().setVerso(false);
+//
+//
+//                    // REQUIRES OBSERVER IF SELECTED == DIAMOND FOR SNART BOTS
+//
+//                    selected.get().transfer(gotPiles.getPiles()[selectedPileIndex], true);   // transfer to pile (includes graphic effect)
+////                        piles[selectedPileIndex], true); // transfer to pile (includes graphic effect)
+//                    gotPiles.updatePileRanks(this);
+////                updatePileRanks();}
+//                }
+//            } else {
+//                setStatusText("Pass.");
+//            }
+//            nextPlayer++;
+//            remainingTurns--;
+//        }
 
-        while(remainingTurns > 0) {
-            nextPlayer = getPlayerIndex(nextPlayer);
-            setStatusText("Player" + nextPlayer + " select a non-Heart card to play.");
-            if (humanPlayers[nextPlayer]) {
-                waitForCorrectSuit(nextPlayer, false);
-            } else {
-                pickACorrectSuit(nextPlayer, false);
-            }
-
-            if (selected.isPresent()) {
-                setStatusText("Selected: " + gotCard.canonical(selected.get()) + ". Player" + nextPlayer + " select a pile to play the card.");
-                // Human
-                if (humanPlayers[nextPlayer]) {
-                    waitForPileSelection();
-                } else {
-                    // bot
-                    selectRandomPile(selected);
-                }
-
-                if(selectedPileIndex != NON_SELECTION_VALUE) {
-                    System.out.println("Player " + nextPlayer + " plays " + gotCard.canonical(selected.get()) + " on pile " + selectedPileIndex);
-                    selected.get().setVerso(false);
-
-
-                    // REQUIRES OBSERVER IF SELECTED == DIAMOND FOR SNART BOTS
-
-                    selected.get().transfer(gotPiles.getPiles()[selectedPileIndex], true);   // transfer to pile (includes graphic effect)
-//                        piles[selectedPileIndex], true); // transfer to pile (includes graphic effect)
-                    gotPiles.updatePileRanks(this);
-//                updatePileRanks();}
-                }
-            } else {
-                setStatusText("Pass.");
-            }
-            nextPlayer++;
-            remainingTurns--;
-        }
+        gameLogic.part2(this, nbRounds, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers);
 
         // 3: calculate winning & update scores for players
         gotPiles.updatePileRanks(this);
