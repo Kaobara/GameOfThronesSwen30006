@@ -178,6 +178,7 @@ public class GameLogic {
         while(remainingTurns > 0) {
             nextPlayer = getPlayerIndex(nextPlayer);
             gameOfThrones.setStatusText("Player" + nextPlayer + " select a non-Heart card to play.");
+
             if (humanPlayers[nextPlayer]) {
                 waitForCorrectSuit(nextPlayer, false, hands, gameOfThrones, gotCard);
             } else {

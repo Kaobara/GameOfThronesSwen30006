@@ -137,51 +137,6 @@ public class GameOfThrones extends CardGame {
 
         gameLogic.part2(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers);
 
-        // 3: calculate winning & update scores for players
-//        gotPiles.updatePileRanks(this);
-////        updatePileRanks();
-//        int[] pile0Ranks = gotPiles.calculatePileRanks(0);
-////                calculatePileRanks(0);
-//        int[] pile1Ranks = gotPiles.calculatePileRanks(1);
-////                calculatePileRanks(1);
-//        System.out.println("piles[0]: " + gotCard.canonical(gotPiles.getPiles()[0]));
-////                piles[0]));
-//        System.out.println("piles[0] is " + "Attack: " + pile0Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile0Ranks[DEFENCE_RANK_INDEX]);
-//        System.out.println("piles[1]: " + gotCard.canonical(gotPiles.getPiles()[0]));
-////                piles[1]));
-//        System.out.println("piles[1] is " + "Attack: " + pile1Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile1Ranks[DEFENCE_RANK_INDEX]);
-//        GoTCard.Rank pile0CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[0].getCardList().get(0).getRank();
-////                piles[0].getCardList().get(0).getRank();
-//        GoTCard.Rank pile1CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[1].getCardList().get(0).getRank();
-////                piles[1].getCardList().get(0).getRank();
-//        String character0Result;
-//        String character1Result;
-//
-//        // determine winner
-//        if (pile0Ranks[ATTACK_RANK_INDEX] > pile1Ranks[DEFENCE_RANK_INDEX]) {
-//            scores[0] += pile1CharacterRank.getRankValue();
-//            scores[2] += pile1CharacterRank.getRankValue();
-//            character0Result = "Character 0 attack on character 1 succeeded.";
-//        } else {
-//            scores[1] += pile1CharacterRank.getRankValue();
-//            scores[3] += pile1CharacterRank.getRankValue();
-//            character0Result = "Character 0 attack on character 1 failed.";
-//        }
-//
-//        if (pile1Ranks[ATTACK_RANK_INDEX] > pile0Ranks[DEFENCE_RANK_INDEX]) {
-//            scores[1] += pile0CharacterRank.getRankValue();
-//            scores[3] += pile0CharacterRank.getRankValue();
-//            character1Result = "Character 1 attack on character 0 succeeded.";
-//        } else {
-//            scores[0] += pile0CharacterRank.getRankValue();
-//            scores[2] += pile0CharacterRank.getRankValue();
-//            character1Result = "Character 1 attack character 0 failed.";
-//        }
-//
-//        updateScores();
-//        System.out.println(character0Result);
-//        System.out.println(character1Result);
-//        setStatusText(character0Result + " " + character1Result);
         gameLogic.part3(this, gotCard, gotPiles, scores);
 
         // 5: discarded all cards on the piles

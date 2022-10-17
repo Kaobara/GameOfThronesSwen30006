@@ -55,4 +55,6 @@ public class GoTPiles {
             gameGraphic.updatePileRankState(j, ranks[gameOfThrones.getATTACK_RANK_INDEX()], ranks[gameOfThrones.getDEFENCE_RANK_INDEX()], gameOfThrones);
         }
     }
+
+
 }
