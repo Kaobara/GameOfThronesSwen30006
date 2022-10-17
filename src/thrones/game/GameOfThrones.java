@@ -135,9 +135,9 @@ public class GameOfThrones extends CardGame {
     }
 
     private void executeAPlay() {
-        gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers);
+        gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers, players);
 
-        gameLogic.part2(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers);
+        gameLogic.part2(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers, players);
 
         gameLogic.part3(this, gotCard, gotPiles, scores);
 

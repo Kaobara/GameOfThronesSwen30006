@@ -131,7 +131,7 @@ public class GameLogic {
         }
     }
 
-    public void part1(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands, boolean[] humanPlayers) {
+    public void part1(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands, boolean[] humanPlayers, Player[] players) {
 
         gotPiles.resetPile(gameOfThrones, deck);
 
@@ -148,15 +148,18 @@ public class GameLogic {
             int playerIndex = getPlayerIndex(nextStartingPlayer + i);
             gameOfThrones.setStatusText("Player " + playerIndex + " select a Heart card to play");
 
-            // if humanPlayer = true, wait for correct suit
-            if (humanPlayers[playerIndex]) {
-                waitForCorrectSuit(playerIndex, true, hands, gameOfThrones, gotCard);
-//                waitForCorrectSuit(playerIndex, true);
-                // else bot logic
-            } else {
-                pickACorrectSuit(playerIndex, true, hands, gameOfThrones, gotCard);
-//                pickACorrectSuit(playerIndex, true);
-            }
+            players[playerIndex].playSuit(gameOfThrones, playerIndex, true, hands, gotCard);
+
+//            // if humanPlayer = true, wait for correct suit
+//            if (humanPlayers[playerIndex]) {
+//                waitForCorrectSuit(playerIndex, true, hands, gameOfThrones, gotCard);
+////                waitForCorrectSuit(playerIndex, true);
+//                // else bot logic
+//            } else {
+//                players[playerIndex].playSuit(gameOfThrones, playerIndex, true, hands, gotCard);
+////                pickACorrectSuit(playerIndex, true, hands, gameOfThrones, gotCard);
+////                pickACorrectSuit(playerIndex, true);
+//            }
 
             int pileIndex = playerIndex % 2;
             assert gameOfThrones.getSelected().isPresent() : " Pass returned on selection of character.";
@@ -170,7 +173,7 @@ public class GameLogic {
 
     }
 
-    public void part2(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands, boolean[] humanPlayers) {
+    public void part2(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands, boolean[] humanPlayers, Player[] players) {
         // 2: play the remaining nbPlayers * nbRounds - 2
         int remainingTurns = nbPlayers * nbRounds - 2;
         int nextPlayer = nextStartingPlayer + 2;
@@ -179,11 +182,12 @@ public class GameLogic {
             nextPlayer = getPlayerIndex(nextPlayer);
             gameOfThrones.setStatusText("Player" + nextPlayer + " select a non-Heart card to play.");
 
-            if (humanPlayers[nextPlayer]) {
-                waitForCorrectSuit(nextPlayer, false, hands, gameOfThrones, gotCard);
-            } else {
-                pickACorrectSuit(nextPlayer, false, hands, gameOfThrones, gotCard);
-            }
+            players[nextPlayer].playSuit(gameOfThrones, nextPlayer, false, hands, gotCard);
+//            if (humanPlayers[nextPlayer]) {
+//                waitForCorrectSuit(nextPlayer, false, hands, gameOfThrones, gotCard);
+//            } else {
+//                pickACorrectSuit(nextPlayer, false, hands, gameOfThrones, gotCard);
+//            }
 
             if (gameOfThrones.getSelected().isPresent()) {
                 gameOfThrones.setStatusText("Selected: " + gotCard.canonical(gameOfThrones.getSelected().get()) + ". Player" + nextPlayer + " select a pile to play the card.");
