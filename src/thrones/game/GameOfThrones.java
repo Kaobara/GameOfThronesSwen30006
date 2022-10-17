@@ -66,6 +66,7 @@ public class GameOfThrones extends CardGame {
     String canonical(Hand h) {
         return "[" + h.getCardList().stream().map(this::canonical).collect(Collectors.joining(",")) + "]";
     }
+
     static public int seed;
     static Random random;
 
@@ -153,7 +154,8 @@ public class GameOfThrones extends CardGame {
     Font bigFont = new Font("Arial", Font.BOLD, 36);
     Font smallFont = new Font("Arial", Font.PLAIN, 10);
 
-    // boolean[] humanPlayers = { true, false, false, false};
+    //boolean[] humanPlayers = { true, true, true, true};
+    //boolean[] humanPlayers = { true, false, false, false};
     boolean[] humanPlayers = { false, false, false, false};
 
 
@@ -170,7 +172,7 @@ public class GameOfThrones extends CardGame {
             pileTextActors[i] = new TextActor(text, Color.WHITE, bgColor, smallFont);
             addActor(pileTextActors[i], pileStatusLocations[i]);
         }
-    }
+    } // LOGIC FINE, LEAVE IT
 
     private void updateScore(int player) {
         removeActor(scoreActors[player]);
@@ -204,6 +206,7 @@ public class GameOfThrones extends CardGame {
             System.out.println("hands[" + i + "]: " + canonical(hands[i]));
         }
 
+        // FOR HUMAN INTERACTION
         for (final Hand currentHand : hands) {
             // Set up human player for interaction
             currentHand.addCardListener(new CardAdapter() {
@@ -226,7 +229,7 @@ public class GameOfThrones extends CardGame {
             hands[i].draw();
         }
         // End graphics
-    }
+    } // LOGIC FINE, LEAVE IT
 
     private void resetPile() {
         if (piles != null) {
@@ -241,6 +244,8 @@ public class GameOfThrones extends CardGame {
             piles[i].draw();
             final Hand currentPile = piles[i];
             final int pileIndex = i;
+
+            //setup player interaction
             piles[i].addCardListener(new CardAdapter() {
                 public void leftClicked(Card card) {
                     selectedPileIndex = pileIndex;
@@ -328,6 +333,7 @@ public class GameOfThrones extends CardGame {
     private void updatePileRanks() {
         for (int j = 0; j < piles.length; j++) {
             int[] ranks = calculatePileRanks(j);
+            System.out.println(ranks[ATTACK_RANK_INDEX]);
             updatePileRankState(j, ranks[ATTACK_RANK_INDEX], ranks[DEFENCE_RANK_INDEX]);
         }
     }
@@ -339,6 +345,7 @@ public class GameOfThrones extends CardGame {
     private void executeAPlay() {
         resetPile();
 
+        // Check Hands has hearts (important for final play)
         nextStartingPlayer = getPlayerIndex(nextStartingPlayer);
         if (hands[nextStartingPlayer].getNumberOfCardsWithSuit(Suit.HEARTS) == 0)
             nextStartingPlayer = getPlayerIndex(nextStartingPlayer + 1);
@@ -348,8 +355,11 @@ public class GameOfThrones extends CardGame {
         for (int i = 0; i < 2; i++) {
             int playerIndex = getPlayerIndex(nextStartingPlayer + i);
             setStatusText("Player " + playerIndex + " select a Heart card to play");
+
+            // if humanPlayer = true, wait for correct suit
             if (humanPlayers[playerIndex]) {
                 waitForCorrectSuit(playerIndex, true);
+                // else bot logic
             } else {
                 pickACorrectSuit(playerIndex, true);
             }
@@ -361,6 +371,7 @@ public class GameOfThrones extends CardGame {
             selected.get().transfer(piles[pileIndex], true); // transfer to pile (includes graphic effect)
             updatePileRanks();
         }
+
 
         // 2: play the remaining nbPlayers * nbRounds - 2
         int remainingTurns = nbPlayers * nbRounds - 2;
@@ -377,13 +388,19 @@ public class GameOfThrones extends CardGame {
 
             if (selected.isPresent()) {
                 setStatusText("Selected: " + canonical(selected.get()) + ". Player" + nextPlayer + " select a pile to play the card.");
+                // Human
                 if (humanPlayers[nextPlayer]) {
                     waitForPileSelection();
                 } else {
+                    // bot
                     selectRandomPile();
                 }
                 System.out.println("Player " + nextPlayer + " plays " + canonical(selected.get()) + " on pile " + selectedPileIndex);
                 selected.get().setVerso(false);
+
+
+                // REQUIRES OBSERVER IF SELECTED == DIAMOND FOR SNART BOTS
+
                 selected.get().transfer(piles[selectedPileIndex], true); // transfer to pile (includes graphic effect)
                 updatePileRanks();
             } else {
@@ -406,6 +423,7 @@ public class GameOfThrones extends CardGame {
         String character0Result;
         String character1Result;
 
+        // determine winner
         if (pile0Ranks[ATTACK_RANK_INDEX] > pile1Ranks[DEFENCE_RANK_INDEX]) {
             scores[0] += pile1CharacterRank.getRankValue();
             scores[2] += pile1CharacterRank.getRankValue();
@@ -425,6 +443,7 @@ public class GameOfThrones extends CardGame {
             scores[2] += pile0CharacterRank.getRankValue();
             character1Result = "Character 1 attack character 0 failed.";
         }
+
         updateScores();
         System.out.println(character0Result);
         System.out.println(character1Result);
@@ -443,11 +462,16 @@ public class GameOfThrones extends CardGame {
         initScore();
 
         setupGame();
+
+        //Maybe combine initScore and setupGame as a full initialization of game
+
+        // Play 6 rounds
         for (int i = 0; i < nbPlays; i++) {
             executeAPlay();
             updateScores();
         }
 
+        // Final scores - leave for now
         String text;
         if (scores[0] > scores[1]) {
             text = "Players 0 and 2 won.";
