@@ -63,7 +63,7 @@ public class GameOfThrones extends CardGame {
     Font smallFont = new Font("Arial", Font.PLAIN, 10);
 
     //boolean[] humanPlayers = { true, true, true, true};
-    //boolean[] humanPlayers = { true, false, false, false};
+//    boolean[] humanPlayers = { true, false, false, false};
     boolean[] humanPlayers = { false, false, false, false};
 
 
@@ -102,32 +102,60 @@ public class GameOfThrones extends CardGame {
     private final int UNDEFINED_INDEX = -1;
     private final int ATTACK_RANK_INDEX = 0;
     private final int DEFENCE_RANK_INDEX = 1;
+
+    public void setSelected(Optional<Card> selected) {
+        this.selected = selected;
+    }
+
+    //    public void setupHandHumanInteraction(Optional<Card> selected, Hand[] hands) {
+//        for (final Hand currentHand : hands) {
+//
+//            // Set up human player for interaction
+//
+//            currentHand.addCardListener(new CardAdapter() {
+//                public void leftDoubleClicked(Card card) {
+//                    selected = Optional.of(card);
+//                    currentHand.setTouchEnabled(false);
+//                }
+//                public void rightClicked(Card card) {
+//                    selected = Optional.empty(); // Don't care which card we right-clicked for player to pass
+//                    currentHand.setTouchEnabled(false);
+//                }
+//            });
+//        }
+//    }
+
+//    hands = new Hand[nbPlayers];
     private void setupGame() {
         hands = new Hand[nbPlayers];
-        for (int i = 0; i < nbPlayers; i++) {
-            hands[i] = new Hand(deck);
-        }
-        gotCard.dealingOut(hands, nbPlayers, nbStartCards);
+//        for (int i = 0; i < nbPlayers; i++) {
+//            hands[i] = new Hand(deck);
+//        }
+//        gotCard.dealingOut(hands, nbPlayers, nbStartCards);
+//
+//        for (int i = 0; i < nbPlayers; i++) {
+//            hands[i].sort(Hand.SortType.SUITPRIORITY, true);
+//            System.out.println("hands[" + i + "]: " + gotCard.canonical(hands[i]));
+//        }
 
-        for (int i = 0; i < nbPlayers; i++) {
-            hands[i].sort(Hand.SortType.SUITPRIORITY, true);
-            System.out.println("hands[" + i + "]: " + gotCard.canonical(hands[i]));
-        }
+        GameLogic gameLogic = new GameLogic();
+        gameLogic.setupHands(hands, deck, nbPlayers, nbStartCards, gotCard);
+        gameLogic.setupHandHumanInteraction(this, hands);
 
-        // FOR HUMAN INTERACTION
-        for (final Hand currentHand : hands) {
-            // Set up human player for interaction
-            currentHand.addCardListener(new CardAdapter() {
-                public void leftDoubleClicked(Card card) {
-                    selected = Optional.of(card);
-                    currentHand.setTouchEnabled(false);
-                }
-                public void rightClicked(Card card) {
-                    selected = Optional.empty(); // Don't care which card we right-clicked for player to pass
-                    currentHand.setTouchEnabled(false);
-                }
-            });
-        }
+//        // FOR HUMAN INTERACTION
+//        for (final Hand currentHand : hands) {
+////             Set up human player for interaction
+//            currentHand.addCardListener(new CardAdapter() {
+//                public void leftDoubleClicked(Card card) {
+//                    selected = Optional.of(card);
+//                    currentHand.setTouchEnabled(false);
+//                }
+//                public void rightClicked(Card card) {
+//                    selected = Optional.empty(); // Don't care which card we right-clicked for player to pass
+//                    currentHand.setTouchEnabled(false);
+//                }
+//            });
+//        }
         // graphics
         RowLayout[] layouts = new RowLayout[nbPlayers];
         for (int i = 0; i < nbPlayers; i++) {
