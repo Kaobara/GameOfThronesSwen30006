@@ -46,8 +46,6 @@ public class GameLogic {
         return index % nbPlayers;
     }
 
-    boolean[] humanPlayers = { true, false, false, false};
-
     private void pickACorrectSuit(int playerIndex, boolean isCharacter, Hand[] hands, GameOfThrones gameOfThrones, GoTCard gotCard) {
         Hand currentHand = hands[playerIndex];
         List<Card> shortListCards = new ArrayList<>();
@@ -104,8 +102,7 @@ public class GameLogic {
     private void waitForPileSelection(GameOfThrones gameOfThrones, GoTPiles gotPiles) {
         gameOfThrones.setSelectedPileIndex(-1);
 //        selectedPileIndex = NON_SELECTION_VALUE;
-        for (Hand pile :
-                gotPiles.getPiles()) {
+        for (Hand pile : gotPiles.getPiles()) {
             pile.setTouchEnabled(true);
         }
         while(gameOfThrones.getSelectedPileIndex() == -1) {
@@ -116,7 +113,7 @@ public class GameLogic {
         }
     }
 
-    public void part1(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands) {
+    public void part1(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands, boolean[] humanPlayers) {
 
         gotPiles.resetPile(gameOfThrones, deck);
 

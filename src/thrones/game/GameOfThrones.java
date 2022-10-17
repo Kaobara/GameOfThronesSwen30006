@@ -24,8 +24,6 @@ public class GameOfThrones extends CardGame {
     public final int nbStartCards = 9;
 	public final int nbPlays = 6;
 	public final int nbRounds = 3;
-    private final int handWidth = 400;
-    private final int pileWidth = 40;
     private Deck deck = new Deck(GoTCard.Suit.values(), GoTCard.Rank.values(), "cover");
 
     private final Location[] scoreLocations = {
@@ -62,8 +60,8 @@ public class GameOfThrones extends CardGame {
     Font smallFont = new Font("Arial", Font.PLAIN, 10);
 
     //boolean[] humanPlayers = { true, true, true, true};
-    boolean[] humanPlayers = { true, false, false, false};
-//    boolean[] humanPlayers = { false, false, false, false};
+//    boolean[] humanPlayers = { true, false, false, false};
+    boolean[] humanPlayers = { false, false, false, false};
 
 
     private void initScore() {
@@ -153,8 +151,20 @@ public class GameOfThrones extends CardGame {
         }
     }
 
-    private void selectRandomPile() {
-        selectedPileIndex = gotCard.random.nextInt(2);
+    private void selectRandomPile(Optional<Card> selected) {
+        int tempSelectedPileIndex = gotCard.random.nextInt(2);
+        System.out.println(gotPiles.getPiles()[tempSelectedPileIndex].getLast().getSuit() + " JSDLIFJD");
+
+
+        if(gotPiles.getPiles()[tempSelectedPileIndex].getLast().getSuit() == GoTCard.Suit.HEARTS && selected.get().getSuit() == GoTCard.Suit.DIAMONDS) {
+            System.out.println("AAA");
+            selectedPileIndex = NON_SELECTION_VALUE;
+        } else {
+            selectedPileIndex = tempSelectedPileIndex;
+        }
+
+
+//        selectedPileIndex = gotCard.random.nextInt(2);
     }
 
     private void waitForCorrectSuit(int playerIndex, boolean isCharacter) {
@@ -231,7 +241,7 @@ public class GameOfThrones extends CardGame {
 ////            updatePileRanks();
 //        }
 
-        gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, deck, hands);
+        gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers);
 
 
         // 2: play the remaining nbPlayers * nbRounds - 2
@@ -254,18 +264,21 @@ public class GameOfThrones extends CardGame {
                     waitForPileSelection();
                 } else {
                     // bot
-                    selectRandomPile();
+                    selectRandomPile(selected);
                 }
-                System.out.println("Player " + nextPlayer + " plays " + gotCard.canonical(selected.get()) + " on pile " + selectedPileIndex);
-                selected.get().setVerso(false);
+
+                if(selectedPileIndex != NON_SELECTION_VALUE) {
+                    System.out.println("Player " + nextPlayer + " plays " + gotCard.canonical(selected.get()) + " on pile " + selectedPileIndex);
+                    selected.get().setVerso(false);
 
 
-                // REQUIRES OBSERVER IF SELECTED == DIAMOND FOR SNART BOTS
+                    // REQUIRES OBSERVER IF SELECTED == DIAMOND FOR SNART BOTS
 
-                selected.get().transfer(gotPiles.getPiles()[selectedPileIndex], true);   // transfer to pile (includes graphic effect)
+                    selected.get().transfer(gotPiles.getPiles()[selectedPileIndex], true);   // transfer to pile (includes graphic effect)
 //                        piles[selectedPileIndex], true); // transfer to pile (includes graphic effect)
-                gotPiles.updatePileRanks(this);
-//                updatePileRanks();
+                    gotPiles.updatePileRanks(this);
+//                updatePileRanks();}
+                }
             } else {
                 setStatusText("Pass.");
             }
