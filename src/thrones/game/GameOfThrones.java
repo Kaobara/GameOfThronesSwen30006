@@ -3,56 +3,31 @@ package thrones.game;
 // Oh_Heaven.java
 
 import ch.aplu.jcardgame.*;
-import ch.aplu.jgamegrid.*;
+import ch.aplu.jgamegrid.Actor;
+import ch.aplu.jgamegrid.Location;
+import ch.aplu.jgamegrid.TextActor;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.FileReader;
-import java.util.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
 public class GameOfThrones extends CardGame {
 
+    private CardMechanism cardMechanism = new CardMechanism();
+
     enum GoTSuit { CHARACTER, DEFENCE, ATTACK, MAGIC }
-    public enum Suit {
-        SPADES(GoTSuit.DEFENCE),
-        HEARTS(GoTSuit.CHARACTER),
-        DIAMONDS(GoTSuit.MAGIC),
-        CLUBS(GoTSuit.ATTACK);
-        Suit(GoTSuit gotsuit) {
-            this.gotsuit = gotsuit;
-        }
-        private final GoTSuit gotsuit;
 
-        public boolean isDefence(){ return gotsuit == GoTSuit.DEFENCE; }
-
-        public boolean isAttack(){ return gotsuit == GoTSuit.ATTACK; }
-
-        public boolean isCharacter(){ return gotsuit == GoTSuit.CHARACTER; }
-
-        public boolean isMagic(){ return gotsuit == GoTSuit.MAGIC; }
-    }
-
-    public enum Rank {
-        // Reverse order of rank importance (see rankGreater() below)
-        // Order of cards is tied to card images
-        ACE(1), KING(10), QUEEN(10), JACK(10), TEN(10), NINE(9), EIGHT(8), SEVEN(7), SIX(6), FIVE(5), FOUR(4), THREE(3), TWO(2);
-        Rank(int rankValue) {
-            this.rankValue = rankValue;
-        }
-        private final int rankValue;
-        public int getRankValue() {
-            return rankValue;
-        }
-    }
 
     /*
     Canonical String representations of Suit, Rank, Card, and Hand
     */
-    String canonical(Suit s) { return s.toString().substring(0, 1); }
+    String canonical(CardInfo.Suit s) { return s.toString().substring(0, 1); }
 
-    String canonical(Rank r) {
+    String canonical(CardInfo.Rank r) {
         switch (r) {
             case ACE: case KING: case QUEEN: case JACK: case TEN:
                 return r.toString().substring(0, 1);
@@ -61,55 +36,55 @@ public class GameOfThrones extends CardGame {
         }
     }
 
-    String canonical(Card c) { return canonical((Rank) c.getRank()) + canonical((Suit) c.getSuit()); }
+    String canonical(Card c) { return canonical((CardInfo.Rank) c.getRank()) + canonical((CardInfo.Suit) c.getSuit()); }
 
     String canonical(Hand h) {
         return "[" + h.getCardList().stream().map(this::canonical).collect(Collectors.joining(",")) + "]";
     }
 
-    static public int seed;
-    static Random random;
-
-    // return random Card from Hand
-    public static Card randomCard(Hand hand) {
-        assert !hand.isEmpty() : " random card from empty hand.";
-        int x = random.nextInt(hand.getNumberOfCards());
-        return hand.get(x);
-    }
-
-    private void dealingOut(Hand[] hands, int nbPlayers, int nbCardsPerPlayer) {
-        Hand pack = deck.toHand(false);
-        assert pack.getNumberOfCards() == 52 : " Starting pack is not 52 cards.";
-        // Remove 4 Aces
-        List<Card> aceCards = pack.getCardsWithRank(Rank.ACE);
-        for (Card card : aceCards) {
-            card.removeFromHand(false);
-        }
-        assert pack.getNumberOfCards() == 48 : " Pack without aces is not 48 cards.";
-        // Give each player 3 heart cards
-        for (int i = 0; i < nbPlayers; i++) {
-            for (int j = 0; j < 3; j++) {
-                List<Card> heartCards = pack.getCardsWithSuit(Suit.HEARTS);
-                int x = random.nextInt(heartCards.size());
-                Card randomCard = heartCards.get(x);
-                randomCard.removeFromHand(false);
-                hands[i].insert(randomCard, false);
-            }
-        }
-        assert pack.getNumberOfCards() == 36 : " Pack without aces and hearts is not 36 cards.";
-        // Give each player 9 of the remaining cards
-        for (int i = 0; i < nbCardsPerPlayer; i++) {
-            for (int j = 0; j < nbPlayers; j++) {
-                assert !pack.isEmpty() : " Pack has prematurely run out of cards.";
-                Card dealt = randomCard(pack);
-                dealt.removeFromHand(false);
-                hands[j].insert(dealt, false);
-            }
-        }
-        for (int j = 0; j < nbPlayers; j++) {
-            assert hands[j].getNumberOfCards() == 12 : " Hand does not have twelve cards.";
-        }
-    }
+//    static public int seed;
+//    static Random random;
+//
+//    // return random Card from Hand
+//    public static Card randomCard(Hand hand) {
+//        assert !hand.isEmpty() : " random card from empty hand.";
+//        int x = random.nextInt(hand.getNumberOfCards());
+//        return hand.get(x);
+//    }
+//
+//    private void dealingOut(Hand[] hands, int nbPlayers, int nbCardsPerPlayer) {
+//        Hand pack = deck.toHand(false);
+//        assert pack.getNumberOfCards() == 52 : " Starting pack is not 52 cards.";
+//        // Remove 4 Aces
+//        List<Card> aceCards = pack.getCardsWithRank(Rank.ACE);
+//        for (Card card : aceCards) {
+//            card.removeFromHand(false);
+//        }
+//        assert pack.getNumberOfCards() == 48 : " Pack without aces is not 48 cards.";
+//        // Give each player 3 heart cards
+//        for (int i = 0; i < nbPlayers; i++) {
+//            for (int j = 0; j < 3; j++) {
+//                List<Card> heartCards = pack.getCardsWithSuit(Suit.HEARTS);
+//                int x = random.nextInt(heartCards.size());
+//                Card randomCard = heartCards.get(x);
+//                randomCard.removeFromHand(false);
+//                hands[i].insert(randomCard, false);
+//            }
+//        }
+//        assert pack.getNumberOfCards() == 36 : " Pack without aces and hearts is not 36 cards.";
+//        // Give each player 9 of the remaining cards
+//        for (int i = 0; i < nbCardsPerPlayer; i++) {
+//            for (int j = 0; j < nbPlayers; j++) {
+//                assert !pack.isEmpty() : " Pack has prematurely run out of cards.";
+//                Card dealt = randomCard(pack);
+//                dealt.removeFromHand(false);
+//                hands[j].insert(dealt, false);
+//            }
+//        }
+//        for (int j = 0; j < nbPlayers; j++) {
+//            assert hands[j].getNumberOfCards() == 12 : " Hand does not have twelve cards.";
+//        }
+//    }
 
     private final String version = "1.0";
     public final int nbPlayers = 4;
@@ -118,7 +93,7 @@ public class GameOfThrones extends CardGame {
 	public final int nbRounds = 3;
     private final int handWidth = 400;
     private final int pileWidth = 40;
-    private Deck deck = new Deck(Suit.values(), Rank.values(), "cover");
+    private Deck deck = new Deck(CardInfo.Suit.values(), CardInfo.Rank.values(), "cover");
     private final Location[] handLocations = {
             new Location(350, 625),
             new Location(75, 350),
@@ -147,7 +122,8 @@ public class GameOfThrones extends CardGame {
     private Hand[] hands;
     private Hand[] piles;
     private final String[] playerTeams = { "[Players 0 & 2]", "[Players 1 & 3]"};
-    private int nextStartingPlayer = random.nextInt(nbPlayers);
+//    private int nextStartingPlayer = random.nextInt(nbPlayers);
+    private int nextStartingPlayer = cardMechanism.random.nextInt(nbPlayers);
 
     private int[] scores = new int[nbPlayers];
 
@@ -199,7 +175,7 @@ public class GameOfThrones extends CardGame {
         for (int i = 0; i < nbPlayers; i++) {
             hands[i] = new Hand(deck);
         }
-        dealingOut(hands, nbPlayers, nbStartCards);
+        cardMechanism.dealingOut(hands, nbPlayers, nbStartCards);
 
         for (int i = 0; i < nbPlayers; i++) {
             hands[i].sort(Hand.SortType.SUITPRIORITY, true);
@@ -262,20 +238,20 @@ public class GameOfThrones extends CardGame {
         List<Card> shortListCards = new ArrayList<>();
         for (int i = 0; i < currentHand.getCardList().size(); i++) {
             Card card = currentHand.getCardList().get(i);
-            Suit suit = (Suit) card.getSuit();
+            CardInfo.Suit suit = (CardInfo.Suit) card.getSuit();
             if (suit.isCharacter() == isCharacter) {
                 shortListCards.add(card);
             }
         }
-        if (shortListCards.isEmpty() || !isCharacter && random.nextInt(3) == 0) {
+        if (shortListCards.isEmpty() || !isCharacter && cardMechanism.random.nextInt(3) == 0) {
             selected = Optional.empty();
         } else {
-            selected = Optional.of(shortListCards.get(random.nextInt(shortListCards.size())));
+            selected = Optional.of(shortListCards.get(cardMechanism.random.nextInt(shortListCards.size())));
         }
     }
 
     private void selectRandomPile() {
-        selectedPileIndex = random.nextInt(2);
+        selectedPileIndex = cardMechanism.random.nextInt(2);
     }
 
     private void waitForCorrectSuit(int playerIndex, boolean isCharacter) {
@@ -289,7 +265,7 @@ public class GameOfThrones extends CardGame {
                     delay(100);
                     continue;
                 }
-                Suit suit = selected.isPresent() ? (Suit) selected.get().getSuit() : null;
+                CardInfo.Suit suit = selected.isPresent() ? (CardInfo.Suit) selected.get().getSuit() : null;
                 if (isCharacter && suit != null && suit.isCharacter() ||         // If we want character, can't pass and suit must be right
                         !isCharacter && (suit == null || !suit.isCharacter())) { // If we don't want character, can pass or suit must not be character
                     // if (suit != null && suit.isCharacter() == isCharacter) {
@@ -318,7 +294,7 @@ public class GameOfThrones extends CardGame {
 
     private int[] calculatePileRanks(int pileIndex) {
         Hand currentPile = piles[pileIndex];
-        int i = currentPile.isEmpty() ? 0 : ((Rank) currentPile.get(0).getRank()).getRankValue();
+        int i = currentPile.isEmpty() ? 0 : ((CardInfo.Rank) currentPile.get(0).getRank()).getRankValue();
         return new int[] { i, i };
     }
 
@@ -347,9 +323,9 @@ public class GameOfThrones extends CardGame {
 
         // Check Hands has hearts (important for final play)
         nextStartingPlayer = getPlayerIndex(nextStartingPlayer);
-        if (hands[nextStartingPlayer].getNumberOfCardsWithSuit(Suit.HEARTS) == 0)
+        if (hands[nextStartingPlayer].getNumberOfCardsWithSuit(CardInfo.Suit.HEARTS) == 0)
             nextStartingPlayer = getPlayerIndex(nextStartingPlayer + 1);
-        assert hands[nextStartingPlayer].getNumberOfCardsWithSuit(Suit.HEARTS) != 0 : " Starting player has no hearts.";
+        assert hands[nextStartingPlayer].getNumberOfCardsWithSuit(CardInfo.Suit.HEARTS) != 0 : " Starting player has no hearts.";
 
         // 1: play the first 2 hearts
         for (int i = 0; i < 2; i++) {
@@ -418,8 +394,8 @@ public class GameOfThrones extends CardGame {
         System.out.println("piles[0] is " + "Attack: " + pile0Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile0Ranks[DEFENCE_RANK_INDEX]);
         System.out.println("piles[1]: " + canonical(piles[1]));
         System.out.println("piles[1] is " + "Attack: " + pile1Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile1Ranks[DEFENCE_RANK_INDEX]);
-        Rank pile0CharacterRank = (Rank) piles[0].getCardList().get(0).getRank();
-        Rank pile1CharacterRank = (Rank) piles[1].getCardList().get(0).getRank();
+        CardInfo.Rank pile0CharacterRank = (CardInfo.Rank) piles[0].getCardList().get(0).getRank();
+        CardInfo.Rank pile1CharacterRank = (CardInfo.Rank) piles[1].getCardList().get(0).getRank();
         String character0Result;
         String character1Result;
 
@@ -504,9 +480,9 @@ public class GameOfThrones extends CardGame {
 			  seed = new Random().nextInt(); // so randomise
         }
         */
-        GameOfThrones.seed = 130006;
-        System.out.println("Seed = " + seed);
-        GameOfThrones.random = new Random(seed);
+//        GameOfThrones.seed = 130006;
+//        System.out.println("Seed = " + seed);
+//        GameOfThrones.random = new Random(seed);
         new GameOfThrones();
     }
 
