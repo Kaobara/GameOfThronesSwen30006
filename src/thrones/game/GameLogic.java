@@ -102,7 +102,7 @@ public class GameLogic {
         }
     }
 
-    public void part3(GameOfThrones gameOfThrones, GoTCard gotCard, GoTPiles gotPiles, int[] scores ) {
+    public void part3(GameOfThrones gameOfThrones, GoTCard gotCard, GoTPiles gotPiles) {
         // 3: calculate winning & update scores for players
         gotPiles.updatePileRanks(gameOfThrones);
 //        updatePileRanks();
@@ -125,26 +125,30 @@ public class GameLogic {
 
         // determine winner
         if (pile0Ranks[ATTACK_RANK_INDEX] > pile1Ranks[DEFENCE_RANK_INDEX]) {
-            scores[0] += pile1CharacterRank.getRankValue();
-            scores[2] += pile1CharacterRank.getRankValue();
+            gameOfThrones.getScore().increaseScore(0, pile1CharacterRank.getRankValue());
+//            scores[0] += pile1CharacterRank.getRankValue();
+//            scores[2] += pile1CharacterRank.getRankValue();
             character0Result = "Character 0 attack on character 1 succeeded.";
         } else {
-            scores[1] += pile1CharacterRank.getRankValue();
-            scores[3] += pile1CharacterRank.getRankValue();
+            gameOfThrones.getScore().increaseScore(1, pile1CharacterRank.getRankValue());
+//            scores[1] += pile1CharacterRank.getRankValue();
+//            scores[3] += pile1CharacterRank.getRankValue();
             character0Result = "Character 0 attack on character 1 failed.";
         }
 
         if (pile1Ranks[ATTACK_RANK_INDEX] > pile0Ranks[DEFENCE_RANK_INDEX]) {
-            scores[1] += pile0CharacterRank.getRankValue();
-            scores[3] += pile0CharacterRank.getRankValue();
+            gameOfThrones.getScore().increaseScore(1, pile0CharacterRank.getRankValue());
+//            scores[1] += pile0CharacterRank.getRankValue();
+//            scores[3] += pile0CharacterRank.getRankValue();
             character1Result = "Character 1 attack on character 0 succeeded.";
         } else {
-            scores[0] += pile0CharacterRank.getRankValue();
-            scores[2] += pile0CharacterRank.getRankValue();
+            gameOfThrones.getScore().increaseScore(0, pile0CharacterRank.getRankValue());
+//            scores[0] += pile0CharacterRank.getRankValue();
+//            scores[2] += pile0CharacterRank.getRankValue();
             character1Result = "Character 1 attack character 0 failed.";
         }
 
-        gameOfThrones.updateScores();
+        gameOfThrones.getScore().updateScores(gameOfThrones);
         System.out.println(character0Result);
         System.out.println(character1Result);
         gameOfThrones.setStatusText(character0Result + " " + character1Result);

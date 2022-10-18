@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class SmartBot extends Bot{
-    @Override
-    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected, int playerIndex) {
-        return;
-    }
-
     private Hand playedMagicCards;
 
     public SmartBot(Deck deck) {
         this.playedMagicCards = new Hand(deck);
     }
+    @Override
+    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected, int playerIndex) {
+        return;
+    }
+
 }

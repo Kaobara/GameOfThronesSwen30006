@@ -61,4 +61,14 @@ public class GameGraphic {
         tempPileTextActors[pileIndex] = new TextActor(text, Color.WHITE, gameOfThrones.bgColor, smallFont);
         gameOfThrones.addActor(tempPileTextActors[pileIndex], pileStatusLocations[pileIndex]);
     }
+
+    public void scoreGraphic(GameOfThrones gameOfThrones, int playerIndex, String text) {
+        gameOfThrones.getScoreActors()[playerIndex] = new TextActor(text, Color.WHITE, gameOfThrones.bgColor, bigFont);
+        gameOfThrones.addActor(gameOfThrones.getScoreActors()[playerIndex], scoreLocations[playerIndex]);
+    }
+
+    public void initPileScoreGraphic(GameOfThrones gameOfThrones, int playerIndex, String text) {
+        gameOfThrones.setPileTextActor(new TextActor(text, Color.WHITE, gameOfThrones.bgColor, smallFont), playerIndex);
+        gameOfThrones.addActor(gameOfThrones.getPileTextActors()[playerIndex], pileStatusLocations[playerIndex]);
+    }
 }

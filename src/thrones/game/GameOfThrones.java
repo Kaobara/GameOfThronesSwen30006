@@ -18,74 +18,34 @@ public class GameOfThrones extends CardGame {
     public static Player[] players = {null, null, null, null};
     private GoTCard gotCard = new GoTCard();
     private GoTPiles gotPiles = new GoTPiles();
+    private Score score = new Score();
+
+    public Score getScore() { return score; }
 
     private final String version = "2.0";
-    public final int nbPlayers = 4;
-    public final int nbTeams = 2;
+    public static final int nbPlayers = 4;
+    public static final int nbTeams = 2;
 	public final int nbPlays = 6;
     private Deck deck = new Deck(GoTCard.Suit.values(), GoTCard.Rank.values(), "cover");
 
-    private final Location[] scoreLocations = {
-            new Location(575, 675),
-            new Location(25, 575),
-            new Location(25, 25),
-            new Location(575, 125)
-    };
-    private final Location[] pileStatusLocations = {
-            new Location(250, 200),
-            new Location(250, 520)
-    };
-
     private Actor[] pileTextActors = { null, null };
-
     public Actor[] getPileTextActors() {
         return pileTextActors;
     }
+    public void setPileTextActor(Actor actor, int i) {pileTextActors[i] = actor; }
+
+    private Actor[] scoreActors = {null, null, null, null};
+    public Actor[] getScoreActors() { return scoreActors; }
+
+    private final int watchingTime = 5000;
+    private Hand[] hands;
+    private final String[] playerTeams = { "[Players 0 & 2]", "[Players 1 & 3]"};
     public String[] getPlayerTeams() {
         return playerTeams;
     }
 
-    private Actor[] scoreActors = {null, null, null, null};
-    private final int watchingTime = 5000;
-    private Hand[] hands;
-    private final String[] playerTeams = { "[Players 0 & 2]", "[Players 1 & 3]"};
     private int nextStartingPlayer = gotCard.random.nextInt(nbPlayers);
-
-    private int[] scores = new int[nbPlayers];
-
-    Font bigFont = new Font("Arial", Font.BOLD, 36);
-    Font smallFont = new Font("Arial", Font.PLAIN, 10);
-
-
-    private void initScore() {
-        for (int i = 0; i < nbPlayers; i++) {
-             scores[i] = 0;
-            String text = "P" + i + "-0";
-            scoreActors[i] = new TextActor(text, Color.WHITE, bgColor, bigFont);
-            addActor(scoreActors[i], scoreLocations[i]);
-        }
-
-        String text = "Attack: 0 - Defence: 0";
-        for (int i = 0; i < pileTextActors.length; i++) {
-            pileTextActors[i] = new TextActor(text, Color.WHITE, bgColor, smallFont);
-            addActor(pileTextActors[i], pileStatusLocations[i]);
-        }
-    } // LOGIC FINE, LEAVE IT
-
-    private void updateScore(int player) {
-        removeActor(scoreActors[player]);
-        String text = "P" + player + "-" + scores[player];
-        scoreActors[player] = new TextActor(text, Color.WHITE, bgColor, bigFont);
-        addActor(scoreActors[player], scoreLocations[player]);
-    }
-
-    public void updateScores() {
-        for (int i = 0; i < nbPlayers; i++) {
-            updateScore(i);
-        }
-        System.out.println(playerTeams[0] + " score = " + scores[0] + "; " + playerTeams[1] + " score = " + scores[1]);
-    }
-
+    
     private PlayerFactory playerFactory = new PlayerFactory();
 
     private Optional<Card> selected;
@@ -131,7 +91,7 @@ public class GameOfThrones extends CardGame {
 
         gameLogic.part2(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, players);
 
-        gameLogic.part3(this, gotCard, gotPiles, scores);
+        gameLogic.part3(this, gotCard, gotPiles);
 
         // 5: discarded all cards on the piles
         nextStartingPlayer += 1;
@@ -147,7 +107,8 @@ public class GameOfThrones extends CardGame {
         for(int i = 0; i<nbPlayers; i++) {
             players[i] = playerFactory.getPlayer(playerTypes[i], deck);
         }
-        initScore();
+
+        score.initScore(this);
 
         setupGame();
 
@@ -156,20 +117,11 @@ public class GameOfThrones extends CardGame {
         // Play 6 rounds
         for (int i = 0; i < nbPlays; i++) {
             executeAPlay();
-            updateScores();
+            score.updateScores(this);
         }
 
         // Final scores - leave for now
-        String text;
-        if (scores[0] > scores[1]) {
-            text = "Players 0 and 2 won.";
-        } else if (scores[0] == scores[1]) {
-            text = "All players drew.";
-        } else {
-            text = "Players 1 and 3 won.";
-        }
-        System.out.println("Result: " + text);
-        setStatusText(text);
+        score.finalScores(this);
 
         refresh();
     }
