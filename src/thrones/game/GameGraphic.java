@@ -50,6 +50,7 @@ public class GameGraphic {
         piles[i].draw();
     }
 
+
     public void updatePileRankState(int pileIndex, int attackRank, int defenceRank, GameOfThrones gameOfThrones) {
         Actor[] tempPileTextActors = gameOfThrones.getPileTextActors();
         String[] tempPlayerTeams = gameOfThrones.getPlayerTeams();
@@ -60,6 +61,14 @@ public class GameGraphic {
         String text = tempPlayerTeams[pileIndex] + " Attack: " + attackRank + " - Defence: " + defenceRank;
         tempPileTextActors[pileIndex] = new TextActor(text, Color.WHITE, gameOfThrones.bgColor, smallFont);
         gameOfThrones.addActor(tempPileTextActors[pileIndex], pileStatusLocations[pileIndex]);
+    }
+
+    public void updatePileRankGraphics(GameOfThrones gameOfThrones, GoTPiles gotPiles) {
+        for (int j = 0; j < gotPiles.getPiles().length; j++) {
+            int[] ranks = gotPiles.calculatePileRanks(j);
+            System.out.println(ranks[GameOfThrones.ATTACK_RANK_INDEX]);
+            updatePileRankState(j, ranks[GameOfThrones.ATTACK_RANK_INDEX], ranks[GameOfThrones.DEFENCE_RANK_INDEX], gameOfThrones);
+        }
     }
 
     public void scoreGraphic(GameOfThrones gameOfThrones, int playerIndex, String text) {

@@ -45,15 +45,15 @@ public class GameOfThrones extends CardGame {
     }
 
     private int nextStartingPlayer = gotCard.random.nextInt(nbPlayers);
-    
+
     private PlayerFactory playerFactory = new PlayerFactory();
 
     private Optional<Card> selected;
     private final int NON_SELECTION_VALUE = -1;
     private int selectedPileIndex = NON_SELECTION_VALUE;
     private final int UNDEFINED_INDEX = -1;
-    private final int ATTACK_RANK_INDEX = 0;
-    private final int DEFENCE_RANK_INDEX = 1;
+    public static final int ATTACK_RANK_INDEX = 0;
+    public static final int DEFENCE_RANK_INDEX = 1;
 
     private final GameLogic gameLogic = new GameLogic();
     private final GameGraphic gameGraphic = new GameGraphic();

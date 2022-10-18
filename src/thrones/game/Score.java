@@ -1,10 +1,15 @@
 package thrones.game;
 
+import ch.aplu.jcardgame.Card;
 import ch.aplu.jgamegrid.TextActor;
 
 import java.awt.*;
+import java.util.Optional;
 
 public class Score {
+    private final int ATTACK_RANK_INDEX = 0;
+    private final int DEFENCE_RANK_INDEX = 1;
+
     int [] scores;
     private GameGraphic gameGraphic = new GameGraphic();
 
@@ -40,15 +45,20 @@ public class Score {
         for(int i = teamNumber%GameOfThrones.nbTeams; i<GameOfThrones.nbPlayers; i += 2) {
             scores[i] += valueIncrease;
         }
+    }
 
+    public void battleScores(GoTPiles gotPiles, Optional<Card> selected, int[] pile0Ranks, int[] pile1Ranks, boolean print) {
 
-//        if(teamNumber%GameOfThrones.nbTeams == 0) {
-//            scores[0] += valueIncrease;
-//            scores[2] += valueIncrease;
-//        } else {
-//            scores[1] += valueIncrease;
-//            scores[3] += valueIncrease;
-//        }
+    }
+
+    public int getWinningTeam() {
+        if (scores[0] > scores[1]) {
+            return 0;
+        } else if (scores[1] > scores[0]) {
+            return 1;
+        } else {
+            return -1; // -1 is DRAW
+        }
     }
 
     public void finalScores(GameOfThrones gameOfThrones) {

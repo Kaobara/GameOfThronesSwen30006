@@ -114,7 +114,6 @@ public class GoTPiles {
         }
     }
 
-
     public void registerObserver(SmartBot smartBot) {
         smartBotObservers.add(smartBot);
     }
@@ -126,6 +125,15 @@ public class GoTPiles {
     }
 
     public void notifySmartBot(Card card) {
+        return;
+    }
 
+    public void transferCardToPile(Card card, int pileIndex, boolean predicted) {
+        if(!predicted) {
+            card.transfer(piles[pileIndex], true);
+            notifySmartBot(card);
+        } else {
+            card.transfer(piles[pileIndex], false);
+        }
     }
 }
