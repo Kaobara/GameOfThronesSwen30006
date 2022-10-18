@@ -10,7 +10,7 @@ public class PlayerFactory {
             case "random":
                 return new RandBot();
             case "simple":
-                return new SimpleBot(deck);
+                return new SimpleBot();
             case "smart":
                 return new SmartBot(deck);
             default:

@@ -42,7 +42,7 @@ public class Human implements  Player{
 
 
     @Override
-    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected) {
+    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected, int playerIndex) {
         gameOfThrones.setSelectedPileIndex(-1);
 //        selectedPileIndex = NON_SELECTION_VALUE;
         for (Hand pile : gotPiles.getPiles()) {

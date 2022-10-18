@@ -21,6 +21,7 @@ public class GameOfThrones extends CardGame {
 
     private final String version = "2.0";
     public final int nbPlayers = 4;
+    public final int nbTeams = 2;
 	public final int nbPlays = 6;
     private Deck deck = new Deck(GoTCard.Suit.values(), GoTCard.Rank.values(), "cover");
 

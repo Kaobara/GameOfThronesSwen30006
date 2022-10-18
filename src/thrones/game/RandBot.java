@@ -10,20 +10,14 @@ public class RandBot extends Bot{
     }
 
     @Override
-    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected) {
+    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected, int playerIndex) {
         int tempSelectedPileIndex = gotCard.random.nextInt(2);
-        System.out.println(gotPiles.getPiles()[tempSelectedPileIndex].getLast().getSuit() + " JSDLIFJD");
 
-
+        // If it attempts to put a diamond card on top of a hearts card, it will instead skip
         if(gotPiles.getPiles()[tempSelectedPileIndex].getLast().getSuit() == GoTCard.Suit.HEARTS && Selected.get().getSuit() == GoTCard.Suit.DIAMONDS) {
-            System.out.println("AAA");
             gameOfThrones.setSelectedPileIndex(-1);
         } else {
             gameOfThrones.setSelectedPileIndex(tempSelectedPileIndex);
         }
-
-
-//        selectedPileIndex = gotCard.random.nextInt(2);
-
     }
 }

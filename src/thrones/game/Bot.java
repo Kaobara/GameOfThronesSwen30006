@@ -21,13 +21,11 @@ abstract public class Bot implements Player{
         }
         if (shortListCards.isEmpty() || !isCharacter && gotCard.random.nextInt(3) == 0) {
             gameOfThrones.setSelected(Optional.empty());
-//            selected = Optional.empty();
         } else {
             gameOfThrones.setSelected(Optional.of(shortListCards.get(gotCard.random.nextInt(shortListCards.size()))));
-//            selected = Optional.of(shortListCards.get(gotCard.random.nextInt(shortListCards.size())));
         }
     }
 
     @Override
-    abstract public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected);
+    abstract public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected, int playerIndex);
 }

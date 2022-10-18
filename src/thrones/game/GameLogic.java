@@ -84,7 +84,7 @@ public class GameLogic {
                 gameOfThrones.setStatusText("Selected: " + gotCard.canonical(gameOfThrones.getSelected().get()) + ". Player" + nextPlayer + " select a pile to play the card.");
 
                 // Select a pile
-                players[nextPlayer].playPile(gameOfThrones, gotPiles, gotCard, gameOfThrones.getSelected());
+                players[nextPlayer].playPile(gameOfThrones, gotPiles, gotCard, gameOfThrones.getSelected(), nextPlayer);
 
                 if(gameOfThrones.getSelectedPileIndex() != NON_SELECTION_VALUE) {
                     System.out.println("Player " + nextPlayer + " plays " + gotCard.canonical(gameOfThrones.getSelected().get()) + " on pile " + gameOfThrones.getSelectedPileIndex());
