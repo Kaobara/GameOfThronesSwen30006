@@ -32,27 +32,55 @@ public class Score {
         }
     } // LOGIC FINE, LEAVE IT
 
-//    private void updateScore(GameOfThrones gameOfThrones, int player) {
-//        gameOfThrones.removeActor(gameOfThrones.getScoreActors()[player]);
-//        String text = "P" + player + "-" + scores[player];
-//        gameGraphic.scoreGraphic(gameOfThrones, player, text);
-//    }
-//
-//    public void updateScores(GameOfThrones gameOfThrones) {
-//        for (int i = 0; i < gameOfThrones.nbPlayers; i++) {
-//            updateScore(gameOfThrones, i);
-//        }
-//        System.out.println(gameOfThrones.getPlayerTeams()[0] + " score = " + scores[0] + "; " + gameOfThrones.getPlayerTeams()[1] + " score = " + scores[1]);
-//    }
-
     public void increaseScore(int teamNumber, int valueIncrease) {
         for(int i = teamNumber%GameOfThrones.nbTeams; i<GameOfThrones.nbPlayers; i += 2) {
             scores[i] += valueIncrease;
         }
     }
 
-    public void battleScores(GoTPiles gotPiles, Optional<Card> selected, int[] pile0Ranks, int[] pile1Ranks, boolean print) {
+    // Give 2 piles (where selected card is ALREADY TRANSFERRED TO PILE), which are the winning scores?
+    // Update the int[] scores
+    public String [] battleScores(GoTCard gotCard, GoTPiles gotPiles, boolean printBool) {
+        int[] pile0Ranks = gotPiles.calculatePileRanks(0);
+        int[] pile1Ranks = gotPiles.calculatePileRanks(1);
 
+        if(printBool) {
+            System.out.println("piles[0]: " + gotCard.canonical(gotPiles.getPiles()[0])); // QUESTION: SHOULD GOTCARD BE STATIC AND PUBLIC?
+            System.out.println("piles[0] is " + "Attack: " + pile0Ranks[GameOfThrones.ATTACK_RANK_INDEX] + " - Defence: " + pile0Ranks[GameOfThrones.DEFENCE_RANK_INDEX]);
+            System.out.println("piles[1]: " + gotCard.canonical(gotPiles.getPiles()[1]));
+            System.out.println("piles[1] is " + "Attack: " + pile1Ranks[GameOfThrones.ATTACK_RANK_INDEX] + " - Defence: " + pile1Ranks[GameOfThrones.DEFENCE_RANK_INDEX]);
+        }
+
+        GoTCard.Rank pile0CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[0].getCardList().get(0).getRank();
+        GoTCard.Rank pile1CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[1].getCardList().get(0).getRank();
+        String character0Result;
+        String character1Result;
+
+        // determine winner
+        if (pile0Ranks[GameOfThrones.ATTACK_RANK_INDEX] > pile1Ranks[GameOfThrones.DEFENCE_RANK_INDEX]) {
+            increaseScore(0, pile1CharacterRank.getRankValue());
+            character0Result = "Character 0 attack on character 1 succeeded.";
+        } else {
+            increaseScore(1, pile1CharacterRank.getRankValue());
+            character0Result = "Character 0 attack on character 1 failed.";
+        }
+
+        if (pile1Ranks[GameOfThrones.ATTACK_RANK_INDEX] > pile0Ranks[GameOfThrones.DEFENCE_RANK_INDEX]) {
+            increaseScore(1, pile0CharacterRank.getRankValue());
+            character1Result = "Character 1 attack on character 0 succeeded.";
+        } else {
+            increaseScore(0, pile0CharacterRank.getRankValue());
+            character1Result = "Character 1 attack character 0 failed.";
+        }
+
+        if(printBool) {
+            System.out.println(character0Result);
+            System.out.println(character1Result);
+            String [] characterResults =  {character0Result, character1Result};
+            return(characterResults);
+        } else {
+            return null;
+        }
     }
 
     public int getWinningTeam() {

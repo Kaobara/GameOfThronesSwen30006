@@ -9,6 +9,11 @@ import java.util.Optional;
 
 public class Human implements  Player{
     @Override
+    public String getPlayerType() {
+        return "human";
+    }
+
+    @Override
     public void playSuit(GameOfThrones gameOfThrones, int playerIndex, boolean isCharacter, Hand[] hands, GoTCard gotCard) {
 
         if (hands[playerIndex].isEmpty()) {

@@ -7,7 +7,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class GoTPiles {
-    public ArrayList<SmartBot> smartBotObservers;
+    private static ArrayList<SmartBot> smartBotObservers = new ArrayList<>();
 
     final int NB_PILES = 2;
     private Hand[] piles;
@@ -47,7 +47,6 @@ public class GoTPiles {
 
     public int[] calculatePileRanks(int pileIndex) {
         Hand currentPile = piles[pileIndex];
-        System.out.println(pileIndex + " " + currentPile.getCardList());
         int atk = 0;
         int def = 0;
         if(!currentPile.isEmpty()) {
@@ -109,7 +108,7 @@ public class GoTPiles {
     public void updatePileRanks(GameOfThrones gameOfThrones) {
         for (int j = 0; j < piles.length; j++) {
             int[] ranks = calculatePileRanks(j);
-            System.out.println(ranks[gameOfThrones.getATTACK_RANK_INDEX()]);
+//            System.out.println(ranks[gameOfThrones.getATTACK_RANK_INDEX()]);
             gameGraphic.updatePileRankState(j, ranks[gameOfThrones.getATTACK_RANK_INDEX()], ranks[gameOfThrones.getDEFENCE_RANK_INDEX()], gameOfThrones);
         }
     }
@@ -125,6 +124,9 @@ public class GoTPiles {
     }
 
     public void notifySmartBot(Card card) {
+        for (SmartBot smartBot: smartBotObservers) {
+            smartBot.updatePlayedMagicCards(card);
+        }
         return;
     }
 

@@ -6,19 +6,24 @@ import ch.aplu.jcardgame.Deck;
 import java.util.Optional;
 
 public class SimpleBot extends  Bot{
+    @Override
+    public String getPlayerType() {
+        return "simple";
+    }
 
     @Override
-    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected, int playerIndex) {
+    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> selected, int playerIndex) {
+        super.playPile(gameOfThrones, gotPiles, gotCard, selected, playerIndex);
         int teamPileIndex = playerIndex%gameOfThrones.nbTeams;
         int enemyPileIndex = (playerIndex+1)%gameOfThrones.nbTeams;
 
-        if(!Selected.isPresent()) {
+        if(!selected.isPresent()) {
             return;
         }
         // If it attempts to put a diamond card on top of a hearts card, it will instead skip
-        if(Selected.get().getSuit() == GoTCard.Suit.DIAMONDS) {
+        if(selected.get().getSuit() == GoTCard.Suit.DIAMONDS) {
             if(gotPiles.getPiles()[enemyPileIndex].getLast().getSuit() == GoTCard.Suit.HEARTS) {
-                gameOfThrones.setSelectedPileIndex(-1);
+                return;
             } else {
                 gameOfThrones.setSelectedPileIndex(enemyPileIndex);
             }

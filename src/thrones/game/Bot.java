@@ -27,5 +27,7 @@ abstract public class Bot implements Player{
     }
 
     @Override
-    abstract public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected, int playerIndex);
+    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> selected, int playerIndex) {
+        gameOfThrones.setSelectedPileIndex(-1);
+    }
 }

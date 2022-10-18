@@ -81,6 +81,12 @@ public class GameOfThrones extends CardGame {
 
     private void setupGame() {
         hands = new Hand[nbPlayers];
+        for (Player player:players) {
+            if(player.getPlayerType().equals("smart")) {
+                gotPiles.registerObserver((SmartBot) player);
+            }
+        }
+
         gameLogic.setupHands(hands, deck, nbPlayers, gotCard);
         gameLogic.setupHandHumanInteraction(this, hands);
         gameGraphic.setupHandGraphic(this, hands, nbPlayers);
@@ -118,7 +124,6 @@ public class GameOfThrones extends CardGame {
         for (int i = 0; i < nbPlays; i++) {
             executeAPlay();
             gameGraphic.updateGraphicScores(this);
-//            score.updateScores(this);
         }
 
         // Final scores - leave for now

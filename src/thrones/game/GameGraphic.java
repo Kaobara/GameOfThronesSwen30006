@@ -66,7 +66,6 @@ public class GameGraphic {
     public void updatePileRankGraphics(GameOfThrones gameOfThrones, GoTPiles gotPiles) {
         for (int j = 0; j < gotPiles.getPiles().length; j++) {
             int[] ranks = gotPiles.calculatePileRanks(j);
-            System.out.println(ranks[GameOfThrones.ATTACK_RANK_INDEX]);
             updatePileRankState(j, ranks[GameOfThrones.ATTACK_RANK_INDEX], ranks[GameOfThrones.DEFENCE_RANK_INDEX], gameOfThrones);
         }
     }
