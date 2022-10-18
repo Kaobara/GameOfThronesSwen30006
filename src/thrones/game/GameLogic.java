@@ -231,7 +231,7 @@ public class GameLogic {
         System.out.println("piles[0]: " + gotCard.canonical(gotPiles.getPiles()[0]));
 //                piles[0]));
         System.out.println("piles[0] is " + "Attack: " + pile0Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile0Ranks[DEFENCE_RANK_INDEX]);
-        System.out.println("piles[1]: " + gotCard.canonical(gotPiles.getPiles()[0]));
+        System.out.println("piles[1]: " + gotCard.canonical(gotPiles.getPiles()[1]));
 //                piles[1]));
         System.out.println("piles[1] is " + "Attack: " + pile1Ranks[ATTACK_RANK_INDEX] + " - Defence: " + pile1Ranks[DEFENCE_RANK_INDEX]);
         GoTCard.Rank pile0CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[0].getCardList().get(0).getRank();
