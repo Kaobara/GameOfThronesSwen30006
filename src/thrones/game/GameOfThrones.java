@@ -47,19 +47,13 @@ public class GameOfThrones extends CardGame {
     private Actor[] scoreActors = {null, null, null, null};
     private final int watchingTime = 5000;
     private Hand[] hands;
-//    private Hand[] piles;
     private final String[] playerTeams = { "[Players 0 & 2]", "[Players 1 & 3]"};
-//    private int nextStartingPlayer = random.nextInt(nbPlayers);
     private int nextStartingPlayer = gotCard.random.nextInt(nbPlayers);
 
     private int[] scores = new int[nbPlayers];
 
     Font bigFont = new Font("Arial", Font.BOLD, 36);
     Font smallFont = new Font("Arial", Font.PLAIN, 10);
-
-    //boolean[] humanPlayers = { true, true, true, true};
-//    boolean[] humanPlayers = { true, false, false, false};
-    boolean[] humanPlayers = { false, false, false, false};
 
 
     private void initScore() {
@@ -135,9 +129,9 @@ public class GameOfThrones extends CardGame {
     }
 
     private void executeAPlay() {
-        gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers, players);
+        gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, players);
 
-        gameLogic.part2(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, humanPlayers, players);
+        gameLogic.part2(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, players);
 
         gameLogic.part3(this, gotCard, gotPiles, scores);
 

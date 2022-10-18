@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Bot implements Player{
+abstract public class Bot implements Player{
     @Override
     public void playSuit(GameOfThrones gameOfThrones, int playerIndex, boolean isCharacter, Hand[] hands, GoTCard gotCard) {
         Hand currentHand = hands[playerIndex];
@@ -29,7 +29,5 @@ public class Bot implements Player{
     }
 
     @Override
-    public void playPile(GameOfThrones gameOfThrones) {
-
-    }
+    abstract public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected);
 }

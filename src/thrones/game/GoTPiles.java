@@ -61,7 +61,6 @@ public class GoTPiles {
                     continue;
                 }
 
-
                 if (((GoTCard.Suit) card.getSuit()).isMagic()) {
                     if (((GoTCard.Suit) lastNonMagicCard.getSuit()).isAttack()) {
                         if (((GoTCard.Rank) card.getRank()).getRankValue() == ((GoTCard.Rank) previousCard.getRank()).getRankValue()) {
@@ -77,10 +76,6 @@ public class GoTPiles {
                         }
                     }
                 }
-
-
-
-
 
                 else if (((GoTCard.Suit) card.getSuit()).isAttack()) {
                     if (((GoTCard.Rank) card.getRank()).getRankValue() == ((GoTCard.Rank) previousCard.getRank()).getRankValue()) {

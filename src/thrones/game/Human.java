@@ -42,7 +42,17 @@ public class Human implements  Player{
 
 
     @Override
-    public void playPile(GameOfThrones gameOfThrones) {
-
+    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected) {
+        gameOfThrones.setSelectedPileIndex(-1);
+//        selectedPileIndex = NON_SELECTION_VALUE;
+        for (Hand pile : gotPiles.getPiles()) {
+            pile.setTouchEnabled(true);
+        }
+        while(gameOfThrones.getSelectedPileIndex() == -1) {
+            gameOfThrones.delay(100);
+        }
+        for (Hand pile : gotPiles.getPiles()) {
+            pile.setTouchEnabled(false);
+        }
     }
 }
