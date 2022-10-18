@@ -319,10 +319,67 @@ public class GameOfThronesOriginal extends CardGame {
         }
     }
 
+//    private int[] calculatePileRanks(int pileIndex) {
+//        Hand currentPile = piles[pileIndex];
+//        int i = currentPile.isEmpty() ? 0 : ((Rank) currentPile.get(0).getRank()).getRankValue();
+//        return new int[] { i, i };
+//    }
+
+//    private boolean checkPreviousCard(Card previousCard, Card currentCard) {
+//
+//    }
+
     private int[] calculatePileRanks(int pileIndex) {
         Hand currentPile = piles[pileIndex];
-        int i = currentPile.isEmpty() ? 0 : ((Rank) currentPile.get(0).getRank()).getRankValue();
-        return new int[] { i, i };
+        System.out.println(pileIndex + " " + currentPile.getCardList());
+        int atk = 0;
+        int def = 0;
+        if(!currentPile.isEmpty()) {
+            Card previousCard = null;
+            for(Card card : currentPile.getCardList()) {
+                // First card in the pile (character)
+                if(card == currentPile.getCardList().get(0)) {
+                    atk = ((Rank)card.getRank()).getRankValue();
+                    def = ((Rank)card.getRank()).getRankValue();
+                    previousCard = card;
+                    continue;
+                }
+
+                if(previousCard != null) {
+                    if (((Suit) card.getSuit()).isMagic()) {
+                        if (((Suit) previousCard.getSuit()).isAttack()) {
+                            if (((Rank) card.getRank()).getRankValue() == ((Rank) previousCard.getRank()).getRankValue()) {
+                                atk -= 2 * ((Rank) card.getRank()).getRankValue();
+                            } else {
+                                atk -= ((Rank) card.getRank()).getRankValue();
+                            }
+                        } else if (((Suit) previousCard.getSuit()).isDefence()) {
+                            if (((Rank) card.getRank()).getRankValue() == ((Rank) previousCard.getRank()).getRankValue()) {
+                                def -= 2 * ((Rank) card.getRank()).getRankValue();
+                            } else {
+                                def -= ((Rank) card.getRank()).getRankValue();
+                            }
+                        }
+                    } else if (((Suit) card.getSuit()).isAttack()) {
+                        if (((Rank) card.getRank()).getRankValue() == ((Rank) previousCard.getRank()).getRankValue()) {
+                            atk += 2 * ((Rank) card.getRank()).getRankValue();
+                        } else {
+                            atk += ((Rank) card.getRank()).getRankValue();
+                        }
+                    } else if (((Suit) card.getSuit()).isDefence()) {
+                        if (((Rank) card.getRank()).getRankValue() == ((Rank) previousCard.getRank()).getRankValue()) {
+                            def += 2 * ((Rank) card.getRank()).getRankValue();
+                        } else {
+                            def += ((Rank) card.getRank()).getRankValue();
+                        }
+                    }
+                }
+
+                previousCard = card;
+            }
+        }
+
+        return new int[] { atk, def };
     }
 
     private void updatePileRankState(int pileIndex, int attackRank, int defenceRank) {
@@ -427,6 +484,7 @@ public class GameOfThronesOriginal extends CardGame {
         String character1Result;
 
         // determine winner
+        // Calculate the Scores and add it
         if (pile0Ranks[ATTACK_RANK_INDEX] > pile1Ranks[DEFENCE_RANK_INDEX]) {
             scores[0] += pile1CharacterRank.getRankValue();
             scores[2] += pile1CharacterRank.getRankValue();

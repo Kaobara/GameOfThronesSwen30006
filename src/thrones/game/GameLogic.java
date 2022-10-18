@@ -51,25 +51,6 @@ public class GameLogic {
         return index % nbPlayers;
     }
 
-    private void pickACorrectSuit(int playerIndex, boolean isCharacter, Hand[] hands, GameOfThrones gameOfThrones, GoTCard gotCard) {
-        Hand currentHand = hands[playerIndex];
-        List<Card> shortListCards = new ArrayList<>();
-        for (int i = 0; i < currentHand.getCardList().size(); i++) {
-            Card card = currentHand.getCardList().get(i);
-            GoTCard.Suit suit = (GoTCard.Suit) card.getSuit();
-            if (suit.isCharacter() == isCharacter) {
-                shortListCards.add(card);
-            }
-        }
-        if (shortListCards.isEmpty() || !isCharacter && gotCard.random.nextInt(3) == 0) {
-            gameOfThrones.setSelected(Optional.empty());
-//            selected = Optional.empty();
-        } else {
-            gameOfThrones.setSelected(Optional.of(shortListCards.get(gotCard.random.nextInt(shortListCards.size()))));
-//            selected = Optional.of(shortListCards.get(gotCard.random.nextInt(shortListCards.size())));
-        }
-    }
-
     private void selectRandomPile(GameOfThrones gameOfThrones, GoTCard gotCard, GoTPiles gotPiles, Optional<Card> Selected) {
 //        gameOfThrones.setSelectedPileIndex(gotCard.random.nextInt(2));
 
@@ -86,35 +67,6 @@ public class GameLogic {
 
 
 //        selectedPileIndex = gotCard.random.nextInt(2);
-    }
-
-    private void waitForCorrectSuit(int playerIndex, boolean isCharacter, Hand[] hands, GameOfThrones gameOfThrones, GoTCard gotCard) {
-        if (hands[playerIndex].isEmpty()) {
-            gameOfThrones.setSelected(Optional.empty());
-//            selected = Optional.empty();
-        } else {
-            gameOfThrones.setSelected(null);
-//            selected = null;
-            hands[playerIndex].setTouchEnabled(true);
-            do {
-                if (gameOfThrones.getSelected() == null) {
-//                        selected == null) {
-                    gameOfThrones.delay(100);
-                    continue;
-                }
-                GoTCard.Suit suit = gameOfThrones.getSelected().isPresent() ? (GoTCard.Suit) gameOfThrones.getSelected().get().getSuit() : null;
-                if (isCharacter && suit != null && suit.isCharacter() ||         // If we want character, can't pass and suit must be right
-                        !isCharacter && (suit == null || !suit.isCharacter())) { // If we don't want character, can pass or suit must not be character
-                    // if (suit != null && suit.isCharacter() == isCharacter) {
-                    break;
-                } else {
-                    gameOfThrones.setSelected(null);
-//                    selected = null;
-                    hands[playerIndex].setTouchEnabled(true);
-                }
-                gameOfThrones.delay(100);
-            } while (true);
-        }
     }
 
     private void waitForPileSelection(GameOfThrones gameOfThrones, GoTPiles gotPiles) {

@@ -44,8 +44,68 @@ public class GoTPiles {
 
     public int[] calculatePileRanks(int pileIndex) {
         Hand currentPile = piles[pileIndex];
-        int i = currentPile.isEmpty() ? 0 : ((GoTCard.Rank) currentPile.get(0).getRank()).getRankValue();
-        return new int[] { i, i };
+        System.out.println(pileIndex + " " + currentPile.getCardList());
+        int atk = 0;
+        int def = 0;
+        if(!currentPile.isEmpty()) {
+            Card previousCard = null;
+            Card lastNonMagicCard = null;
+
+            for(Card card : currentPile.getCardList()) {
+                // First card in the pile (character)
+                if(card == currentPile.getCardList().get(0)) {
+                    atk = ((GoTCard.Rank)card.getRank()).getRankValue();
+                    def = ((GoTCard.Rank)card.getRank()).getRankValue();
+                    previousCard = card;
+                    lastNonMagicCard = card;
+                    continue;
+                }
+
+
+                if (((GoTCard.Suit) card.getSuit()).isMagic()) {
+                    if (((GoTCard.Suit) lastNonMagicCard.getSuit()).isAttack()) {
+                        if (((GoTCard.Rank) card.getRank()).getRankValue() == ((GoTCard.Rank) previousCard.getRank()).getRankValue()) {
+                            atk -= 2 * ((GoTCard.Rank) card.getRank()).getRankValue();
+                        } else {
+                            atk -= ((GoTCard.Rank) card.getRank()).getRankValue();
+                        }
+                    } else if (((GoTCard.Suit) lastNonMagicCard.getSuit()).isDefence()) {
+                        if (((GoTCard.Rank) card.getRank()).getRankValue() == ((GoTCard.Rank) previousCard.getRank()).getRankValue()) {
+                            def -= 2 * ((GoTCard.Rank) card.getRank()).getRankValue();
+                        } else {
+                            def -= ((GoTCard.Rank) card.getRank()).getRankValue();
+                        }
+                    }
+                }
+
+
+
+
+
+                else if (((GoTCard.Suit) card.getSuit()).isAttack()) {
+                    if (((GoTCard.Rank) card.getRank()).getRankValue() == ((GoTCard.Rank) previousCard.getRank()).getRankValue()) {
+                        atk += 2 * ((GoTCard.Rank) card.getRank()).getRankValue();
+                    } else {
+                        atk += ((GoTCard.Rank) card.getRank()).getRankValue();
+                    }
+
+                    lastNonMagicCard = card;
+                } else if (((GoTCard.Suit) card.getSuit()).isDefence()) {
+                    if (((GoTCard.Rank) card.getRank()).getRankValue() == ((GoTCard.Rank) previousCard.getRank()).getRankValue()) {
+                        def += 2 * ((GoTCard.Rank) card.getRank()).getRankValue();
+                    } else {
+                        def += ((GoTCard.Rank) card.getRank()).getRankValue();
+                    }
+
+                    lastNonMagicCard = card;
+                }
+
+
+                previousCard = card;
+            }
+        }
+
+        return new int[] { atk, def };
     }
 
     public void updatePileRanks(GameOfThrones gameOfThrones) {
