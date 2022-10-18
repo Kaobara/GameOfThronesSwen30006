@@ -100,7 +100,6 @@ public class GameOfThrones extends CardGame {
     public void setSelected(Optional<Card> selected) {
         this.selected = selected;
     }
-
     public Optional<Card> getSelected() {
         return selected;
     }
@@ -108,7 +107,6 @@ public class GameOfThrones extends CardGame {
     public void setSelectedPileIndex(int selectedPileIndex) {
         this.selectedPileIndex = selectedPileIndex;
     }
-
     public int getSelectedPileIndex() {
         return selectedPileIndex;
     }
@@ -116,7 +114,6 @@ public class GameOfThrones extends CardGame {
     public int getATTACK_RANK_INDEX() {
         return ATTACK_RANK_INDEX;
     }
-
     public int getDEFENCE_RANK_INDEX() {
         return DEFENCE_RANK_INDEX;
     }
@@ -147,7 +144,7 @@ public class GameOfThrones extends CardGame {
         setStatusText("Initializing...");
 
         for(int i = 0; i<nbPlayers; i++) {
-            players[i] = playerFactory.getPlayer(playerTypes[i]);
+            players[i] = playerFactory.getPlayer(playerTypes[i], deck);
         }
         initScore();
 

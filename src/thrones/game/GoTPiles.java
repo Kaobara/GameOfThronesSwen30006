@@ -4,8 +4,11 @@ import ch.aplu.jcardgame.*;
 import ch.aplu.jgamegrid.TextActor;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GoTPiles {
+    public ArrayList<SmartBot> smartBotObservers;
+
     final int NB_PILES = 2;
     private Hand[] piles;
     GameGraphic gameGraphic = new GameGraphic();
@@ -112,4 +115,17 @@ public class GoTPiles {
     }
 
 
+    public void registerObserver(SmartBot smartBot) {
+        smartBotObservers.add(smartBot);
+    }
+
+    public void unregisterObserver(SmartBot smartBot) {
+        if(smartBotObservers.contains(smartBot)) {
+            smartBotObservers.remove(smartBot);
+        }
+    }
+
+    public void notifySmartBot(Card card) {
+
+    }
 }
