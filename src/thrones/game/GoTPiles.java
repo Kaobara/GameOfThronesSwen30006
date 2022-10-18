@@ -17,6 +17,13 @@ public class GoTPiles {
         return piles;
     }
 
+    private void setPiles(Hand[] piles) {this.piles = piles; }
+    public GoTPiles clonePiles() {
+        GoTPiles clonePiles = new GoTPiles();
+        clonePiles.setPiles(piles);
+        return clonePiles;
+    }
+
     public void resetPile(GameOfThrones gameOfThrones, Deck deck) {
         if (piles != null) {
             for (Hand pile : piles) {

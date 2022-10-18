@@ -10,11 +10,20 @@ public class Score {
     private final int ATTACK_RANK_INDEX = 0;
     private final int DEFENCE_RANK_INDEX = 1;
 
-    int [] scores;
+    private int [] scores;
     private GameGraphic gameGraphic = new GameGraphic();
 
     public int[] getScores() {
         return scores;
+    }
+    private void copyScores(int[] scores) {this.scores = scores; }
+
+    public Score(){}
+
+    public Score cloneScore(Score score) {
+        Score cloneScore = new Score();
+        cloneScore.copyScores(scores.clone());
+        return cloneScore;
     }
 
     public void initScore(GameOfThrones gameOfThrones) {
@@ -32,9 +41,9 @@ public class Score {
         }
     } // LOGIC FINE, LEAVE IT
 
-    public void increaseScore(int teamNumber, int valueIncrease) {
+    private void increaseScore(int teamNumber, int valueIncrease) {
         for(int i = teamNumber%GameOfThrones.nbTeams; i<GameOfThrones.nbPlayers; i += 2) {
-            scores[i] += valueIncrease;
+            this.scores[i] += valueIncrease;
         }
     }
 
