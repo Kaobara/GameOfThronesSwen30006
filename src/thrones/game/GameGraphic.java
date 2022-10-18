@@ -80,4 +80,17 @@ public class GameGraphic {
         gameOfThrones.setPileTextActor(new TextActor(text, Color.WHITE, gameOfThrones.bgColor, smallFont), playerIndex);
         gameOfThrones.addActor(gameOfThrones.getPileTextActors()[playerIndex], pileStatusLocations[playerIndex]);
     }
+
+    private void updateGraphicScore(GameOfThrones gameOfThrones, int player) {
+        gameOfThrones.removeActor(gameOfThrones.getScoreActors()[player]);
+        String text = "P" + player + "-" + gameOfThrones.getScore().getScores()[player];
+        scoreGraphic(gameOfThrones, player, text);
+    }
+
+    public void updateGraphicScores(GameOfThrones gameOfThrones) {
+        for (int i = 0; i < gameOfThrones.nbPlayers; i++) {
+            updateGraphicScore(gameOfThrones, i);
+        }
+        System.out.println(gameOfThrones.getPlayerTeams()[0] + " score = " + gameOfThrones.getScore().getScores()[0] + "; " + gameOfThrones.getPlayerTeams()[1] + " score = " + gameOfThrones.getScore().getScores()[1]);
+    }
 }

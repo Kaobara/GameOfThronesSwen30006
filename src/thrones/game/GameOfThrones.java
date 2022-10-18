@@ -117,7 +117,8 @@ public class GameOfThrones extends CardGame {
         // Play 6 rounds
         for (int i = 0; i < nbPlays; i++) {
             executeAPlay();
-            score.updateScores(this);
+            gameGraphic.updateGraphicScores(this);
+//            score.updateScores(this);
         }
 
         // Final scores - leave for now

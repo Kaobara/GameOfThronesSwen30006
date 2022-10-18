@@ -13,6 +13,10 @@ public class Score {
     int [] scores;
     private GameGraphic gameGraphic = new GameGraphic();
 
+    public int[] getScores() {
+        return scores;
+    }
+
     public void initScore(GameOfThrones gameOfThrones) {
         scores = new int[gameOfThrones.nbPlayers];
 
@@ -28,18 +32,18 @@ public class Score {
         }
     } // LOGIC FINE, LEAVE IT
 
-    private void updateScore(GameOfThrones gameOfThrones, int player) {
-        gameOfThrones.removeActor(gameOfThrones.getScoreActors()[player]);
-        String text = "P" + player + "-" + scores[player];
-        gameGraphic.scoreGraphic(gameOfThrones, player, text);
-    }
-
-    public void updateScores(GameOfThrones gameOfThrones) {
-        for (int i = 0; i < gameOfThrones.nbPlayers; i++) {
-            updateScore(gameOfThrones, i);
-        }
-        System.out.println(gameOfThrones.getPlayerTeams()[0] + " score = " + scores[0] + "; " + gameOfThrones.getPlayerTeams()[1] + " score = " + scores[1]);
-    }
+//    private void updateScore(GameOfThrones gameOfThrones, int player) {
+//        gameOfThrones.removeActor(gameOfThrones.getScoreActors()[player]);
+//        String text = "P" + player + "-" + scores[player];
+//        gameGraphic.scoreGraphic(gameOfThrones, player, text);
+//    }
+//
+//    public void updateScores(GameOfThrones gameOfThrones) {
+//        for (int i = 0; i < gameOfThrones.nbPlayers; i++) {
+//            updateScore(gameOfThrones, i);
+//        }
+//        System.out.println(gameOfThrones.getPlayerTeams()[0] + " score = " + scores[0] + "; " + gameOfThrones.getPlayerTeams()[1] + " score = " + scores[1]);
+//    }
 
     public void increaseScore(int teamNumber, int valueIncrease) {
         for(int i = teamNumber%GameOfThrones.nbTeams; i<GameOfThrones.nbPlayers; i += 2) {
