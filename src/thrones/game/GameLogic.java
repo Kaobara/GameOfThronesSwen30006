@@ -4,9 +4,9 @@ import ch.aplu.jcardgame.*;
 import java.util.Optional;
 
 public class GameLogic {
-    public void setupHands(Hand[] hands, Deck deck, int nbPlayers, GoTCard gotCard) {
+    public void setupHands(Hand[] hands, int nbPlayers, GoTCard gotCard) {
         for (int i = 0; i < nbPlayers; i++) {
-            hands[i] = new Hand(deck);
+            hands[i] = new Hand(GoTCard.deck);
         }
         gotCard.dealingOut(hands, nbPlayers, nbStartCards);
 
@@ -15,7 +15,7 @@ public class GameLogic {
             System.out.println("hands[" + i + "]: " + gotCard.canonical(hands[i]));
         }
     }
-    public void setupHandHumanInteraction(GameOfThrones gameOfThrones, Hand[] hands){
+    private void setupHandHumanInteraction(GameOfThrones gameOfThrones, Hand[] hands){
         for (final Hand currentHand : hands) {
             // Set up human player for interaction
             currentHand.addCardListener(new CardAdapter() {
@@ -32,6 +32,11 @@ public class GameLogic {
         }
     }
 
+    public void setupHandInteractionAndGraphics(GameOfThrones gameOfThrones, Hand[] hands) {
+        setupHandHumanInteraction(gameOfThrones, hands);
+        gameGraphic.setupHandGraphic(gameOfThrones, hands);
+    }
+
     private int nbPlayers = 4;
     private int nbRounds = 3;
     private int nbStartCards = 9;
@@ -42,8 +47,8 @@ public class GameLogic {
         return index % nbPlayers;
     }
 
-    public void part1(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands, Player[] players) {
-        gotPiles.resetPile(gameOfThrones, deck);
+    public void part1(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Hand[] hands, Player[] players) {
+        gotPiles.resetPile(gameOfThrones, GoTCard.deck);
 
         // Check Hands has hearts (important for final play)
         nextStartingPlayer = getPlayerIndex(nextStartingPlayer);
@@ -67,7 +72,7 @@ public class GameLogic {
         }
     }
 
-    public void part2(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Deck deck, Hand[] hands, Player[] players) {
+    public void part2(GameOfThrones gameOfThrones, int nextStartingPlayer, GoTCard gotCard, GoTPiles gotPiles, Hand[] hands, Player[] players) {
         // 2: play the remaining nbPlayers * nbRounds - 2
         int remainingTurns = nbPlayers * nbRounds - 2;
         int nextPlayer = nextStartingPlayer + 2;
@@ -78,13 +83,26 @@ public class GameLogic {
 
             // Select a card from hand
             players[nextPlayer].playSuit(gameOfThrones, nextPlayer, false, hands, gotCard);
+            if(players[nextPlayer].getPlayerType() == "smart") {
+                if(gameOfThrones.getSelected().isEmpty()) {
+                    System.out.println("NO CARDS SELECTED");
+                }
+            }
 
 
             if (gameOfThrones.getSelected().isPresent()) {
 
                 gameOfThrones.setStatusText("Selected: " + gotCard.canonical(gameOfThrones.getSelected().get()) + ". Player" + nextPlayer + " select a pile to play the card.");
                 // Select a pile
-                players[nextPlayer].playPile(gameOfThrones, gotPiles, gotCard, gameOfThrones.getSelected(), nextPlayer);
+                try {
+                    players[nextPlayer].playPile(gameOfThrones, gotPiles, gameOfThrones.getSelected().get(), nextPlayer);
+                } catch (BrokeRuleException e) {
+                    System.out.println("Invalid play");
+                }
+
+
+
+
                 if(gameOfThrones.getSelectedPileIndex() != NON_SELECTION_VALUE) {
                     System.out.println("Player " + nextPlayer + " plays " + gotCard.canonical(gameOfThrones.getSelected().get()) + " on pile " + gameOfThrones.getSelectedPileIndex());
                     gameOfThrones.getSelected().get().setVerso(false);
@@ -138,7 +156,7 @@ public class GameLogic {
 //        System.out.println(character1Result);
 //        gameOfThrones.setStatusText(character0Result + " " + character1Result);
 
-        String[] characterResults = gameOfThrones.getScore().battleScores(gotCard, gotPiles, true);
+        String[] characterResults = gameOfThrones.getScore().battleScores(gotPiles, true);
 
         if(characterResults != null) {
             gameOfThrones.setStatusText(characterResults[0] + " " + characterResults[1]);

@@ -9,10 +9,14 @@ import ch.aplu.jgamegrid.TextActor;
 import java.awt.*;
 
 public class GameGraphic {
+
+    // Graphic Attributes
     private final int handWidth = 400;
     private final int pileWidth = 40;
     Font bigFont = new Font("Arial", Font.BOLD, 36);
     Font smallFont = new Font("Arial", Font.PLAIN, 10);
+
+    // Graphic
     private final Location[] handLocations = {
             new Location(350, 625),
             new Location(75, 350),
@@ -35,9 +39,9 @@ public class GameGraphic {
             new Location(250, 520)
     };
 
-    public void setupHandGraphic(GameOfThrones gameOfThrones, Hand[] hands, int nbPlayers) {
-        RowLayout[] layouts = new RowLayout[nbPlayers];
-        for (int i = 0; i < nbPlayers; i++) {
+    public void setupHandGraphic(GameOfThrones gameOfThrones, Hand[] hands) {
+        RowLayout[] layouts = new RowLayout[GameOfThrones.nbPlayers];
+        for (int i = 0; i < GameOfThrones.nbPlayers; i++) {
             layouts[i] = new RowLayout(handLocations[i], handWidth);
             layouts[i].setRotationAngle(90 * i);
             hands[i].setView(gameOfThrones, layouts[i]);
@@ -87,9 +91,10 @@ public class GameGraphic {
     }
 
     public void updateGraphicScores(GameOfThrones gameOfThrones) {
-        for (int i = 0; i < gameOfThrones.nbPlayers; i++) {
+        for (int i = 0; i < GameOfThrones.nbPlayers; i++) {
             updateGraphicScore(gameOfThrones, i);
         }
-        System.out.println(gameOfThrones.getPlayerTeams()[0] + " score = " + gameOfThrones.getScore().getScores()[0] + "; " + gameOfThrones.getPlayerTeams()[1] + " score = " + gameOfThrones.getScore().getScores()[1]);
+        System.out.println(gameOfThrones.getPlayerTeams()[0] + " score = " + gameOfThrones.getScore().getScores()[0] +
+                "; " + gameOfThrones.getPlayerTeams()[1] + " score = " + gameOfThrones.getScore().getScores()[1]);
     }
 }

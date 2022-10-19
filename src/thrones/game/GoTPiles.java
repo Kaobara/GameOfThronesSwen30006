@@ -18,9 +18,9 @@ public class GoTPiles {
     }
 
     private void setPiles(Hand[] piles) {this.piles = piles; }
-    public GoTPiles clonePiles() {
+    public GoTPiles clonePiles(GoTPiles gotPiles) {
         GoTPiles clonePiles = new GoTPiles();
-        clonePiles.setPiles(piles);
+        clonePiles.setPiles(piles.clone());
         return clonePiles;
     }
 
@@ -108,7 +108,12 @@ public class GoTPiles {
                 previousCard = card;
             }
         }
-
+        if(atk < 0) {
+            atk = 0;
+        }
+        if(def<0) {
+            def = 0;
+        }
         return new int[] { atk, def };
     }
 

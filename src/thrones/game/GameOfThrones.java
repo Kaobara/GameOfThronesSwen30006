@@ -15,8 +15,10 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
 public class GameOfThrones extends CardGame {
+    public static int seed;
     public static Player[] players = {null, null, null, null};
-    private GoTCard gotCard = new GoTCard();
+    private GoTCard gotCard;
+//            = new GoTCard();
     private GoTPiles gotPiles = new GoTPiles();
     private Score score = new Score();
 
@@ -26,7 +28,7 @@ public class GameOfThrones extends CardGame {
     public static final int nbPlayers = 4;
     public static final int nbTeams = 2;
 	public final int nbPlays = 6;
-    private Deck deck = new Deck(GoTCard.Suit.values(), GoTCard.Rank.values(), "cover");
+//    private Deck deck = new Deck(GoTCard.Suit.values(), GoTCard.Rank.values(), "cover");
 
     private Actor[] pileTextActors = { null, null };
     public Actor[] getPileTextActors() {
@@ -37,19 +39,20 @@ public class GameOfThrones extends CardGame {
     private Actor[] scoreActors = {null, null, null, null};
     public Actor[] getScoreActors() { return scoreActors; }
 
-    private final int watchingTime = 5000;
+    public static int watchingTime = 5000;
     private Hand[] hands;
     private final String[] playerTeams = { "[Players 0 & 2]", "[Players 1 & 3]"};
     public String[] getPlayerTeams() {
         return playerTeams;
     }
 
-    private int nextStartingPlayer = gotCard.random.nextInt(nbPlayers);
+    private int nextStartingPlayer;
+//    = gotCard.getRandom().nextInt(nbPlayers);
 
-    private PlayerFactory playerFactory = new PlayerFactory();
+    private PlayerFactory playerFactory = PlayerFactory.getInstance();
 
     private Optional<Card> selected;
-    private final int NON_SELECTION_VALUE = -1;
+    public static final int NON_SELECTION_VALUE = -1;
     private int selectedPileIndex = NON_SELECTION_VALUE;
     private final int UNDEFINED_INDEX = -1;
     public static final int ATTACK_RANK_INDEX = 0;
@@ -80,22 +83,31 @@ public class GameOfThrones extends CardGame {
     }
 
     private void setupGame() {
+        gotCard = GoTCard.getInstance();
+        System.out.println("Seed = " + seed);
+        gotCard.setRandom(seed);
+        nextStartingPlayer = gotCard.getRandom().nextInt(nbPlayers);
+
         hands = new Hand[nbPlayers];
+        gameLogic.setupHands(hands, nbPlayers, gotCard);
+
+        for(int i = 0; i<nbPlayers; i++) {
+            players[i] = playerFactory.getPlayer(playerTypes[i], hands[i]);
+        }
+
         for (Player player:players) {
             if(player.getPlayerType().equals("smart")) {
                 gotPiles.registerObserver((SmartBot) player);
             }
         }
 
-        gameLogic.setupHands(hands, deck, nbPlayers, gotCard);
-        gameLogic.setupHandHumanInteraction(this, hands);
-        gameGraphic.setupHandGraphic(this, hands, nbPlayers);
+        gameLogic.setupHandInteractionAndGraphics(this, hands);
     }
 
     private void executeAPlay() {
-        gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, players);
+        gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, hands, players);
 
-        gameLogic.part2(this, nextStartingPlayer, gotCard, gotPiles, deck, hands, players);
+        gameLogic.part2(this, nextStartingPlayer, gotCard, gotPiles, hands, players);
 
         gameLogic.part3(this, gotCard, gotPiles);
 
@@ -110,9 +122,7 @@ public class GameOfThrones extends CardGame {
         setTitle("Game of Thrones (V" + version + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
         setStatusText("Initializing...");
 
-        for(int i = 0; i<nbPlayers; i++) {
-            players[i] = playerFactory.getPlayer(playerTypes[i], deck);
-        }
+
 
         score.initScore(this);
 
@@ -141,7 +151,7 @@ public class GameOfThrones extends CardGame {
 
          System.out.println("Working Directory = " + System.getProperty("user.dir"));
          Properties properties = new Properties();
-         properties.setProperty("watchingTime", "5000");
+//         properties.setProperty("watchingTime", "5000");
 //        /*
         if (args == null || args.length == 0) {
               properties = PropertiesLoader.loadPropertiesFile(DEFAULT_PROPERTIES_PATH);
@@ -154,9 +164,13 @@ public class GameOfThrones extends CardGame {
             playerTypes[i] = properties.getProperty("players."+i);
         }
 
-        for(int i = 0; i<4; i++) {
-            System.out.println(playerTypes[i]);
-        }
+        // Setup gotCard and seed
+        GameOfThrones.seed = Integer.parseInt(properties.getProperty("seed"));
+        System.out.println("Seed = " + seed);
+
+        // Setup watching time
+        GameOfThrones.watchingTime = Integer.parseInt(properties.getProperty("watchingTime"));
+        System.out.println("Watching Time = " + watchingTime);
 
 //        String seedProp = properties.getProperty("seed");  //Seed property
 ////        if (seedProp != null) { // Use property seed
@@ -165,8 +179,7 @@ public class GameOfThrones extends CardGame {
 ////			  seed = new Random().nextInt(); // so randomise
 ////        }
 //        */
-//        GameOfThrones.seed = 130006;
-//        System.out.println("Seed = " + seed);
+
 //        GameOfThrones.random = new Random(seed);
         new GameOfThrones();
     }

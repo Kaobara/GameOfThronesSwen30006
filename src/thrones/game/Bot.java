@@ -19,15 +19,16 @@ abstract public class Bot implements Player{
                 shortListCards.add(card);
             }
         }
-        if (shortListCards.isEmpty() || !isCharacter && gotCard.random.nextInt(3) == 0) {
+        if (shortListCards.isEmpty() || !isCharacter && GoTCard.getRandom().nextInt(3) == 0) {
+            System.out.println("PASS");
             gameOfThrones.setSelected(Optional.empty());
         } else {
-            gameOfThrones.setSelected(Optional.of(shortListCards.get(gotCard.random.nextInt(shortListCards.size()))));
+            gameOfThrones.setSelected(Optional.of(shortListCards.get(GoTCard.getRandom().nextInt(shortListCards.size()))));
         }
     }
 
     @Override
-    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> selected, int playerIndex) {
-        gameOfThrones.setSelectedPileIndex(-1);
+    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, Card selected, int playerIndex) {
+        gameOfThrones.setSelectedPileIndex(GameOfThrones.NON_SELECTION_VALUE);
     }
 }

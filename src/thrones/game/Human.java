@@ -47,15 +47,23 @@ public class Human implements  Player{
 
 
     @Override
-    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, GoTCard gotCard, Optional<Card> Selected, int playerIndex) {
-        gameOfThrones.setSelectedPileIndex(-1);
+    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, Card selected, int playerIndex)
+    throws BrokeRuleException {
+        gameOfThrones.setSelectedPileIndex(GameOfThrones.NON_SELECTION_VALUE);
 //        selectedPileIndex = NON_SELECTION_VALUE;
         for (Hand pile : gotPiles.getPiles()) {
             pile.setTouchEnabled(true);
         }
-        while(gameOfThrones.getSelectedPileIndex() == -1) {
+        while(gameOfThrones.getSelectedPileIndex() == GameOfThrones.NON_SELECTION_VALUE) {
             gameOfThrones.delay(100);
         }
+
+        if(gotPiles.getPiles()[gameOfThrones.getSelectedPileIndex()].getLast().getSuit() == GoTCard.Suit.HEARTS && selected.getSuit() == GoTCard.Suit.DIAMONDS) {
+            gameOfThrones.setSelectedPileIndex(GameOfThrones.NON_SELECTION_VALUE);
+            throw new BrokeRuleException("Invalid Pile Selection. Turn passed");
+        }
+
+
         for (Hand pile : gotPiles.getPiles()) {
             pile.setTouchEnabled(false);
         }

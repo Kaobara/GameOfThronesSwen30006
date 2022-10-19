@@ -9,6 +9,16 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class GoTCard {
+    private static GoTCard gotCard;
+    private GoTCard() {}
+    public static GoTCard getInstance() {
+        if(gotCard == null) {
+            gotCard = new GoTCard();
+        }
+
+        return gotCard;
+    }
+
     enum GoTSuit { CHARACTER, DEFENCE, ATTACK, MAGIC }
     public enum Suit {
         SPADES(GoTSuit.DEFENCE),
@@ -62,8 +72,14 @@ public class GoTCard {
         return "[" + h.getCardList().stream().map(this::canonical).collect(Collectors.joining(",")) + "]";
     }
 
-    static Random random = new Random(130006);
-    private Deck deck = new Deck(Suit.values(), Rank.values(), "cover");
+
+
+    // Seed, random getters and setters
+    private static Random random;
+    public void setRandom(int seed){ random = new Random(seed);}
+    public static Random getRandom() { return random; }
+
+    public static final Deck deck = new Deck(Suit.values(), Rank.values(), "cover");
 
     // return random Card from Hand
     public static Card randomCard(Hand hand) {

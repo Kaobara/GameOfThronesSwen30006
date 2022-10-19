@@ -49,9 +49,11 @@ public class Score {
 
     // Give 2 piles (where selected card is ALREADY TRANSFERRED TO PILE), which are the winning scores?
     // Update the int[] scores
-    public String [] battleScores(GoTCard gotCard, GoTPiles gotPiles, boolean printBool) {
+    public String [] battleScores(GoTPiles gotPiles, boolean printBool) {
         int[] pile0Ranks = gotPiles.calculatePileRanks(0);
         int[] pile1Ranks = gotPiles.calculatePileRanks(1);
+
+        GoTCard gotCard = GoTCard.getInstance();
 
         if(printBool) {
             System.out.println("piles[0]: " + gotCard.canonical(gotPiles.getPiles()[0])); // QUESTION: SHOULD GOTCARD BE STATIC AND PUBLIC?
