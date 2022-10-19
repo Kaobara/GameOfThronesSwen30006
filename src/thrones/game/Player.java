@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface Player {
     public String getPlayerType();
-    public void playSuit(GameOfThrones gameOfThrones, int playerIndex, boolean isCharacter, Hand[] hands, GoTCard gotCard);
-    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, Card selected, int playerIndex) throws BrokeRuleException;
+    public void playSuit(GameOfThrones got, int playerIndex, boolean isCharacter, Hand[] hands);
+    public void playPile(GameOfThrones got, GoTPiles gotPiles, Card selected, int playerIndex) throws BrokeRuleException;
 }

@@ -4,70 +4,51 @@ package thrones.game;
 
 import ch.aplu.jcardgame.*;
 import ch.aplu.jgamegrid.Actor;
-import ch.aplu.jgamegrid.Location;
-import ch.aplu.jgamegrid.TextActor;
 import utility.PropertiesLoader;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
 public class GameOfThrones extends CardGame {
-    public static int seed;
-    public static Player[] players = {null, null, null, null};
-    private GoTCard gotCard;
-//            = new GoTCard();
-    private GoTPiles gotPiles = new GoTPiles();
-    private Score score = new Score();
+    // setup game properties
+    public static final String DEFAULT_PROPERTIES_PATH = "properties/got.properties";
+    public static String[] playerTypes;
+    public static int watchingTime = 5000;
+    public static int seed = 30006;
 
-    public Score getScore() { return score; }
-
+    // General game properties
     private final String version = "2.0";
     public static final int nbPlayers = 4;
     public static final int nbTeams = 2;
-	public final int nbPlays = 6;
-//    private Deck deck = new Deck(GoTCard.Suit.values(), GoTCard.Rank.values(), "cover");
+	public static final int nbPlays = 6;
 
-    private Actor[] pileTextActors = { null, null };
-    public Actor[] getPileTextActors() {
-        return pileTextActors;
-    }
-    public void setPileTextActor(Actor actor, int i) {pileTextActors[i] = actor; }
+    // General game constants
+    public static final int NON_SELECTION_VALUE = -1;
+    public static final int ATTACK_RANK_INDEX = 0;
+    public static final int DEFENCE_RANK_INDEX = 1;
 
-    private Actor[] scoreActors = {null, null, null, null};
-    public Actor[] getScoreActors() { return scoreActors; }
-
-    public static int watchingTime = 5000;
-    private Hand[] hands;
+    // Game attributes
+    private static Player[] players = {null, null, null, null};
     private final String[] playerTeams = { "[Players 0 & 2]", "[Players 1 & 3]"};
     public String[] getPlayerTeams() {
         return playerTeams;
     }
 
     private int nextStartingPlayer;
-//    = gotCard.getRandom().nextInt(nbPlayers);
-
-    private PlayerFactory playerFactory = PlayerFactory.getInstance();
-
-    private Optional<Card> selected;
-    public static final int NON_SELECTION_VALUE = -1;
+    private GoTPiles gotPiles = new GoTPiles();
     private int selectedPileIndex = NON_SELECTION_VALUE;
-    private final int UNDEFINED_INDEX = -1;
-    public static final int ATTACK_RANK_INDEX = 0;
-    public static final int DEFENCE_RANK_INDEX = 1;
+    private Hand[] hands;
+    private Optional<Card> selected;
+    private Score score = new Score();
+    public Score getScore() { return score; }
 
-    private final GameLogic gameLogic = new GameLogic();
-    private final GameGraphic gameGraphic = new GameGraphic();
-
+    // Selected and PileSelectedIndex getters and setters
     public void setSelected(Optional<Card> selected) {
         this.selected = selected;
     }
     public Optional<Card> getSelected() {
         return selected;
     }
-
     public void setSelectedPileIndex(int selectedPileIndex) {
         this.selectedPileIndex = selectedPileIndex;
     }
@@ -75,112 +56,85 @@ public class GameOfThrones extends CardGame {
         return selectedPileIndex;
     }
 
-    public int getATTACK_RANK_INDEX() {
-        return ATTACK_RANK_INDEX;
+    // Actors
+    private Actor[] pileTextActors = { null, null };
+    public Actor[] getPileTextActors() {
+        return pileTextActors;
     }
-    public int getDEFENCE_RANK_INDEX() {
-        return DEFENCE_RANK_INDEX;
-    }
+    public void setPileTextActor(Actor actor, int i) {pileTextActors[i] = actor; }
+    private Actor[] scoreActors = {null, null, null, null};
+    public Actor[] getScoreActors() { return scoreActors; }
+
+    private final GameLogic gameLogic = new GameLogic();
 
     private void setupGame() {
-        gotCard = GoTCard.getInstance();
-        System.out.println("Seed = " + seed);
-        gotCard.setRandom(seed);
-        nextStartingPlayer = gotCard.getRandom().nextInt(nbPlayers);
+        GoTCard.getInstance().setRandom(seed);
+        nextStartingPlayer = GoTCard.getRandom().nextInt(nbPlayers);
 
+        // Setup hands
         hands = new Hand[nbPlayers];
-        gameLogic.setupHands(hands, nbPlayers, gotCard);
+        gameLogic.setupHands(hands, nbPlayers);
 
+        // Create Player array
+        PlayerFactory playerFactory = PlayerFactory.getInstance();
         for(int i = 0; i<nbPlayers; i++) {
             players[i] = playerFactory.getPlayer(playerTypes[i], hands[i]);
-        }
 
-        for (Player player:players) {
-            if(player.getPlayerType().equals("smart")) {
-                gotPiles.registerObserver((SmartBot) player);
+            // Register smart players
+            if(players[i].getPlayerType().equals("smart")) {
+                gotPiles.registerObserver((SmartBot) players[i]);
             }
         }
 
         gameLogic.setupHandInteractionAndGraphics(this, hands);
     }
 
-    private void executeAPlay() {
-        gameLogic.part1(this, nextStartingPlayer, gotCard, gotPiles, hands, players);
-
-        gameLogic.part2(this, nextStartingPlayer, gotCard, gotPiles, hands, players);
-
-        gameLogic.part3(this, gotCard, gotPiles);
-
-        // 5: discarded all cards on the piles
-        nextStartingPlayer += 1;
-        delay(watchingTime);
-    }
-
     public GameOfThrones() {
         super(700, 700, 30);
-
         setTitle("Game of Thrones (V" + version + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
         setStatusText("Initializing...");
 
-
-
+        // Initialize scores nd games
         score.initScore(this);
-
         setupGame();
 
-        //Maybe combine initScore and setupGame as a full initialization of game
-
-        // Play 6 rounds
-        for (int i = 0; i < nbPlays; i++) {
-            executeAPlay();
-            gameGraphic.updateGraphicScores(this);
-        }
-
-        // Final scores - leave for now
+        // Play the game
+        gameLogic.playGame(this, nextStartingPlayer, gotPiles, hands, players, watchingTime);
         score.finalScores(this);
 
         refresh();
     }
 
-    public static final String DEFAULT_PROPERTIES_PATH = "properties/got.properties";
-
-    public static String[] playerTypes;
-
     public static void main(String[] args) {
         String propertiesPath = DEFAULT_PROPERTIES_PATH;
 
          System.out.println("Working Directory = " + System.getProperty("user.dir"));
-         Properties properties = new Properties();
-//         properties.setProperty("watchingTime", "5000");
-//        /*
+         Properties properties;
+
         if (args == null || args.length == 0) {
               properties = PropertiesLoader.loadPropertiesFile(DEFAULT_PROPERTIES_PATH);
         } else {
               properties = PropertiesLoader.loadPropertiesFile(args[0]);
         }
 
+        // Setup player types
         playerTypes = new String[4];
         for(int i = 0; i<4; i++) {
             playerTypes[i] = properties.getProperty("players."+i);
         }
 
-        // Setup gotCard and seed
-        GameOfThrones.seed = Integer.parseInt(properties.getProperty("seed"));
-        System.out.println("Seed = " + seed);
-
         // Setup watching time
         GameOfThrones.watchingTime = Integer.parseInt(properties.getProperty("watchingTime"));
         System.out.println("Watching Time = " + watchingTime);
 
-//        String seedProp = properties.getProperty("seed");  //Seed property
-////        if (seedProp != null) { // Use property seed
-////			  seed = Integer.parseInt(seedProp);
-////        } else { // and no property
-////			  seed = new Random().nextInt(); // so randomise
-////        }
-//        */
+        // Setup seeds
+        String seedProp = properties.getProperty("seed");  //Seed property
+        if (seedProp != null) { // Use property seed
+			  seed = Integer.parseInt(seedProp);
+        } else { // and no property
+			  seed = new Random().nextInt(); // so randomise
+        }
 
-//        GameOfThrones.random = new Random(seed);
         new GameOfThrones();
     }
 

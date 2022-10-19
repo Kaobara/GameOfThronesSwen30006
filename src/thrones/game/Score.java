@@ -1,54 +1,45 @@
 package thrones.game;
 
-import ch.aplu.jcardgame.Card;
-import ch.aplu.jgamegrid.TextActor;
-
-import java.awt.*;
-import java.util.Optional;
-
 public class Score {
-    private final int ATTACK_RANK_INDEX = 0;
-    private final int DEFENCE_RANK_INDEX = 1;
-
-    private int [] scores;
     private GameGraphic gameGraphic = new GameGraphic();
-
-    public int[] getScores() {
-        return scores;
-    }
-    private void copyScores(int[] scores) {this.scores = scores; }
+    private int [] scores;
 
     public Score(){}
 
+    private void copyScores(int[] scores) {this.scores = scores; }
     public Score cloneScore(Score score) {
         Score cloneScore = new Score();
         cloneScore.copyScores(scores.clone());
         return cloneScore;
     }
 
-    public void initScore(GameOfThrones gameOfThrones) {
-        scores = new int[gameOfThrones.nbPlayers];
+    public int[] getScores() {
+        return scores;
+    }
 
-        for (int i = 0; i < gameOfThrones.nbPlayers; i++) {
+    public void initScore(GameOfThrones got) {
+        scores = new int[GameOfThrones.nbPlayers];
+
+        for (int i = 0; i < GameOfThrones.nbPlayers; i++) {
             scores[i] = 0;
             String text = "P" + i + "-0";
-            gameGraphic.scoreGraphic(gameOfThrones, i, text);
+            gameGraphic.scoreGraphic(got, i, text);
         }
 
         String text = "Attack: 0 - Defence: 0";
-        for (int i = 0; i < gameOfThrones.getPileTextActors().length; i++) {
-            gameGraphic.initPileScoreGraphic(gameOfThrones, i, text);
+        for (int i = 0; i < got.getPileTextActors().length; i++) {
+            gameGraphic.initPileScoreGraphic(got, i, text);
         }
     } // LOGIC FINE, LEAVE IT
 
+    // Given a team number and character ranks, increase the score of that team
     private void increaseScore(int teamNumber, int valueIncrease) {
         for(int i = teamNumber%GameOfThrones.nbTeams; i<GameOfThrones.nbPlayers; i += 2) {
             this.scores[i] += valueIncrease;
         }
     }
 
-    // Give 2 piles (where selected card is ALREADY TRANSFERRED TO PILE), which are the winning scores?
-    // Update the int[] scores
+    // Given piles, find the outcome, and increase the score depending on successful attacks
     public String [] battleScores(GoTPiles gotPiles, boolean printBool) {
         int[] pile0Ranks = gotPiles.calculatePileRanks(0);
         int[] pile1Ranks = gotPiles.calculatePileRanks(1);
@@ -94,6 +85,7 @@ public class Score {
         }
     }
 
+    // Given score, find which team is winning (team 0 or 1)
     public int getWinningTeam() {
         if (scores[0] > scores[1]) {
             return 0;
@@ -104,7 +96,7 @@ public class Score {
         }
     }
 
-    public void finalScores(GameOfThrones gameOfThrones) {
+    public void finalScores(GameOfThrones got) {
         // Final scores - leave for now
         String text;
         if (scores[0] > scores[1]) {
@@ -115,6 +107,6 @@ public class Score {
             text = "Players 1 and 3 won.";
         }
         System.out.println("Result: " + text);
-        gameOfThrones.setStatusText(text);
+        got.setStatusText(text);
     }
 }

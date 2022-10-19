@@ -7,11 +7,10 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class GoTPiles {
-    private static ArrayList<SmartBot> smartBotObservers = new ArrayList<>();
-
     final int NB_PILES = 2;
     private Hand[] piles;
     GameGraphic gameGraphic = new GameGraphic();
+    private static ArrayList<SmartBot> smartBotObservers = new ArrayList<>();
 
     public Hand[] getPiles() {
         return piles;
@@ -24,7 +23,7 @@ public class GoTPiles {
         return clonePiles;
     }
 
-    public void resetPile(GameOfThrones gameOfThrones, Deck deck) {
+    public void resetPile(GameOfThrones got, Deck deck) {
         if (piles != null) {
             for (Hand pile : piles) {
                 pile.removeAll(true);
@@ -35,7 +34,7 @@ public class GoTPiles {
             piles[i] = new Hand(deck);
 
             // TURN THIS INTO GRAPHICS
-            gameGraphic.resetPileGraphic(gameOfThrones, i, piles);
+            gameGraphic.resetPileGraphic(got, i, piles);
 
             final Hand currentPile = piles[i];
             final int pileIndex = i;
@@ -43,13 +42,13 @@ public class GoTPiles {
             //setup player interaction
             piles[i].addCardListener(new CardAdapter() {
                 public void leftClicked(Card card) {
-                    gameOfThrones.setSelectedPileIndex(pileIndex);
+                    got.setSelectedPileIndex(pileIndex);
                     currentPile.setTouchEnabled(false);
                 }
             });
         }
 
-        updatePileRanks(gameOfThrones);
+        updatePileRanks(got);
     }
 
     public int[] calculatePileRanks(int pileIndex) {
@@ -100,14 +99,12 @@ public class GoTPiles {
                     } else {
                         def += ((GoTCard.Rank) card.getRank()).getRankValue();
                     }
-
                     lastNonMagicCard = card;
                 }
-
-
                 previousCard = card;
             }
         }
+
         if(atk < 0) {
             atk = 0;
         }
@@ -117,11 +114,10 @@ public class GoTPiles {
         return new int[] { atk, def };
     }
 
-    public void updatePileRanks(GameOfThrones gameOfThrones) {
+    public void updatePileRanks(GameOfThrones got) {
         for (int j = 0; j < piles.length; j++) {
             int[] ranks = calculatePileRanks(j);
-//            System.out.println(ranks[gameOfThrones.getATTACK_RANK_INDEX()]);
-            gameGraphic.updatePileRankState(j, ranks[gameOfThrones.getATTACK_RANK_INDEX()], ranks[gameOfThrones.getDEFENCE_RANK_INDEX()], gameOfThrones);
+            gameGraphic.updatePileRankState(j, ranks[GameOfThrones.ATTACK_RANK_INDEX], ranks[GameOfThrones.DEFENCE_RANK_INDEX], got);
         }
     }
 
@@ -129,17 +125,10 @@ public class GoTPiles {
         smartBotObservers.add(smartBot);
     }
 
-    public void unregisterObserver(SmartBot smartBot) {
-        if(smartBotObservers.contains(smartBot)) {
-            smartBotObservers.remove(smartBot);
-        }
-    }
-
     public void notifySmartBot(Card card) {
         for (SmartBot smartBot: smartBotObservers) {
             smartBot.updatePlayedMagicCards(card);
         }
-        return;
     }
 
     public void transferCardToPile(Card card, int pileIndex, boolean predicted) {

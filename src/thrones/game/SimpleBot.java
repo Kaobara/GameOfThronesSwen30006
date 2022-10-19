@@ -12,10 +12,10 @@ public class SimpleBot extends BrainBot{
     }
 
     @Override
-    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, Card selected, int playerIndex) {
-        super.playPile(gameOfThrones, gotPiles, selected, playerIndex);
-        int chosenPile = super.chooseCorrectPile(gameOfThrones, gotPiles, selected, playerIndex);
-        gameOfThrones.setSelectedPileIndex(chosenPile);
+    public void playPile(GameOfThrones got, GoTPiles gotPiles, Card selected, int playerIndex) {
+        super.playPile(got, gotPiles, selected, playerIndex);
+        int chosenPile = super.chooseCorrectPile(gotPiles, selected, playerIndex);
+        got.setSelectedPileIndex(chosenPile);
 
     }
 

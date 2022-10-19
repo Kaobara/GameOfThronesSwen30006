@@ -1,16 +1,16 @@
 package thrones.game;
 
-import ch.aplu.jcardgame.Deck;
 import ch.aplu.jcardgame.Hand;
 
 public class PlayerFactory {
+
+    // Setup so that playerFactory is a singleton
     private static PlayerFactory playerFactory;
     private PlayerFactory() {}
     public static PlayerFactory getInstance() {
         if(playerFactory == null) {
             playerFactory = new PlayerFactory();
         }
-
         return playerFactory;
     }
 

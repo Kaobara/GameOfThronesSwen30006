@@ -9,7 +9,8 @@ import java.util.Optional;
 
 abstract public class Bot implements Player{
     @Override
-    public void playSuit(GameOfThrones gameOfThrones, int playerIndex, boolean isCharacter, Hand[] hands, GoTCard gotCard) {
+    // Select a random card from your hand. Same logic for all bots
+    public void playSuit(GameOfThrones got, int playerIndex, boolean isCharacter, Hand[] hands) {
         Hand currentHand = hands[playerIndex];
         List<Card> shortListCards = new ArrayList<>();
         for (int i = 0; i < currentHand.getCardList().size(); i++) {
@@ -21,14 +22,14 @@ abstract public class Bot implements Player{
         }
         if (shortListCards.isEmpty() || !isCharacter && GoTCard.getRandom().nextInt(3) == 0) {
             System.out.println("PASS");
-            gameOfThrones.setSelected(Optional.empty());
+            got.setSelected(Optional.empty());
         } else {
-            gameOfThrones.setSelected(Optional.of(shortListCards.get(GoTCard.getRandom().nextInt(shortListCards.size()))));
+            got.setSelected(Optional.of(shortListCards.get(GoTCard.getRandom().nextInt(shortListCards.size()))));
         }
     }
 
     @Override
-    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, Card selected, int playerIndex) {
-        gameOfThrones.setSelectedPileIndex(GameOfThrones.NON_SELECTION_VALUE);
+    public void playPile(GameOfThrones got, GoTPiles gotPiles, Card selected, int playerIndex) {
+        got.setSelectedPileIndex(GameOfThrones.NON_SELECTION_VALUE);
     }
 }

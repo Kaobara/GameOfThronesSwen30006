@@ -12,16 +12,16 @@ public class RandBot extends Bot{
     }
 
     @Override
-    public void playPile(GameOfThrones gameOfThrones, GoTPiles gotPiles, Card selected, int playerIndex) {
-        super.playPile(gameOfThrones, gotPiles, selected, playerIndex);
-
+    public void playPile(GameOfThrones got, GoTPiles gotPiles, Card selected, int playerIndex) {
+        super.playPile(got, gotPiles, selected, playerIndex);
+        // Select random pile
         int tempSelectedPileIndex = GoTCard.getRandom().nextInt(2);
 
         // If it attempts to put a diamond card on top of a hearts card, it will instead skip
         if(gotPiles.getPiles()[tempSelectedPileIndex].getLast().getSuit() == GoTCard.Suit.HEARTS && selected.getSuit() == GoTCard.Suit.DIAMONDS) {
-            gameOfThrones.setSelectedPileIndex(GameOfThrones.NON_SELECTION_VALUE);
+            got.setSelectedPileIndex(GameOfThrones.NON_SELECTION_VALUE);
         } else {
-            gameOfThrones.setSelectedPileIndex(tempSelectedPileIndex);
+            got.setSelectedPileIndex(tempSelectedPileIndex);
         }
     }
 }
