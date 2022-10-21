@@ -72,8 +72,6 @@ public class GoTCard {
         return "[" + h.getCardList().stream().map(this::canonical).collect(Collectors.joining(",")) + "]";
     }
 
-
-
     // Seed, random getters and setters
     private static Random random;
     public void setRandom(int seed){ random = new Random(seed);}

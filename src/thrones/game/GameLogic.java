@@ -35,8 +35,7 @@ public class GameLogic {
                     currentHand.setTouchEnabled(false);
                 }
                 public void rightClicked(Card card) {
-                    got.setSelected( Optional.empty());
-//                    selected = Optional.empty(); // Don't care which card we right-clicked for player to pass
+                    got.setSelected( Optional.empty()); // Don't care which card we right-clicked for player to pass
                     currentHand.setTouchEnabled(false);
                 }
             });
@@ -119,40 +118,6 @@ public class GameLogic {
     private void finalizeScore(GameOfThrones got, GoTPiles gotPiles) {
         // 3: calculate winning & update scores for players
         gameGraphic.updatePileRankGraphics(got, gotPiles);
-
-//        int[] pile0Ranks = gotPiles.calculatePileRanks(0);
-//        int[] pile1Ranks = gotPiles.calculatePileRanks(1);
-//
-//        System.out.println("piles[0]: " + gotCard.canonical(gotPiles.getPiles()[0]));
-//        System.out.println("piles[0] is " + "Attack: " + pile0Ranks[GameOfThrones.ATTACK_RANK_INDEX] + " - Defence: " + pile0Ranks[GameOfThrones.DEFENCE_RANK_INDEX]);
-//        System.out.println("piles[1]: " + gotCard.canonical(gotPiles.getPiles()[1]));
-//        System.out.println("piles[1] is " + "Attack: " + pile1Ranks[GameOfThrones.ATTACK_RANK_INDEX] + " - Defence: " + pile1Ranks[GameOfThrones.DEFENCE_RANK_INDEX]);
-//
-//        GoTCard.Rank pile0CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[0].getCardList().get(0).getRank();
-//        GoTCard.Rank pile1CharacterRank = (GoTCard.Rank) gotPiles.getPiles()[1].getCardList().get(0).getRank();
-//        String character0Result;
-//        String character1Result;
-//
-//        // determine winner
-//        if (pile0Ranks[GameOfThrones.ATTACK_RANK_INDEX] > pile1Ranks[GameOfThrones.DEFENCE_RANK_INDEX]) {
-//            got.getScore().increaseScore(0, pile1CharacterRank.getRankValue());
-//            character0Result = "Character 0 attack on character 1 succeeded.";
-//        } else {
-//            got.getScore().increaseScore(1, pile1CharacterRank.getRankValue());
-//            character0Result = "Character 0 attack on character 1 failed.";
-//        }
-//
-//        if (pile1Ranks[GameOfThrones.ATTACK_RANK_INDEX] > pile0Ranks[GameOfThrones.DEFENCE_RANK_INDEX]) {
-//            got.getScore().increaseScore(1, pile0CharacterRank.getRankValue());
-//            character1Result = "Character 1 attack on character 0 succeeded.";
-//        } else {
-//            got.getScore().increaseScore(0, pile0CharacterRank.getRankValue());
-//            character1Result = "Character 1 attack character 0 failed.";
-//        }
-//
-//        System.out.println(character0Result);
-//        System.out.println(character1Result);
-//        got.setStatusText(character0Result + " " + character1Result);
 
         String[] characterResults = got.getScore().battleScores(gotPiles, true);
 

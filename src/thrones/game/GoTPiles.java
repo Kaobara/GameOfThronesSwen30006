@@ -1,9 +1,7 @@
 package thrones.game;
 
 import ch.aplu.jcardgame.*;
-import ch.aplu.jgamegrid.TextActor;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class GoTPiles {

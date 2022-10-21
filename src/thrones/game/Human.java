@@ -3,8 +3,6 @@ package thrones.game;
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class Human implements  Player{
@@ -45,7 +43,6 @@ public class Human implements  Player{
     public void playPile(GameOfThrones got, GoTPiles gotPiles, Card selected, int playerIndex)
     throws BrokeRuleException {
         got.setSelectedPileIndex(GameOfThrones.NON_SELECTION_VALUE);
-//        selectedPileIndex = NON_SELECTION_VALUE;
         for (Hand pile : gotPiles.getPiles()) {
             pile.setTouchEnabled(true);
         }

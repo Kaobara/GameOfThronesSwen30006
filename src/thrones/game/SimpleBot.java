@@ -1,9 +1,6 @@
 package thrones.game;
 
 import ch.aplu.jcardgame.Card;
-import ch.aplu.jcardgame.Deck;
-
-import java.util.Optional;
 
 public class SimpleBot extends BrainBot{
     @Override
