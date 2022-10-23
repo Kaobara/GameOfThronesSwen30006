@@ -78,7 +78,9 @@ public class GameOfThrones extends CardGame {
         // Create Player array
         PlayerFactory playerFactory = PlayerFactory.getInstance();
         for(int i = 0; i<nbPlayers; i++) {
+
             players[i] = playerFactory.getPlayer(playerTypes[i], hands[i]);
+
 
             // Register smart players
             if(players[i].getPlayerType().equals("smart")) {
@@ -136,9 +138,14 @@ public class GameOfThrones extends CardGame {
         // Setup player types
         playerTypes = new String[4];
         for(int i = 0; i<4; i++) {
-            if(playerTypes[i] != null) {
-                playerTypes[i] = properties.getProperty("players."+i);
+            String playerProp = properties.getProperty("players."+i);
+            if(playerProp != null) {
+                playerTypes[i] = playerProp;
             } else {
+                playerTypes[i] = "random";
+            }
+            // Default player to random
+            if(playerTypes[i].isEmpty()) {
                 playerTypes[i] = "random";
             }
         }

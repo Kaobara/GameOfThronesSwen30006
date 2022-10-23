@@ -17,10 +17,10 @@ public class Human implements  Player{
         if (hands[playerIndex].isEmpty()) {
             got.setSelected(Optional.empty());
         } else {
-            got.setSelected(Optional.empty());
+            got.setSelected(null);
             hands[playerIndex].setTouchEnabled(true);
             do {
-                if (got.getSelected().isEmpty()) {
+                if (got.getSelected() == null) {
                     GameOfThrones.delay(100);
                     continue;
                 }
