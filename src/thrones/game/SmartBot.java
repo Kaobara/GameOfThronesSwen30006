@@ -52,14 +52,14 @@ public class SmartBot extends BrainBot{
         if(selected.getSuit() != GoTCard.Suit.DIAMONDS) {
             // check if magic rank of card has been played before
             if(!knownMagicCardsRanks.contains((Integer) ((GoTCard.Rank) selected.getRank()).getRankValue())) {
-
-                // If it has a rank = 10 (10, J, Q, K), check if all 4 rank-10 magic cards have been played
-                if(((GoTCard.Rank) selected.getRank()).getRankValue() == 10) {
-                    if(!(Collections.frequency(knownMagicCardsRanks, 10) == 4)) {
-                        return;
-                    }
-                }
                 return;
+            }
+
+            // If it has a rank = 10 (10, J, Q, K), check if all 4 rank-10 magic cards have been played
+            else if(((GoTCard.Rank) selected.getRank()).getRankValue() == 10) {
+                if(!(Collections.frequency(knownMagicCardsRanks, 10) == 4)) {
+                    return;
+                }
             }
         }
 
