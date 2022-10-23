@@ -41,12 +41,14 @@ public class SmartBot extends BrainBot{
         // Initialize temporary scores and piles
         Score initialScore = got.getScore().cloneScore(got.getScore());
         Score finalScore = got.getScore().cloneScore(got.getScore());
-        GoTPiles initialTempPiles = gotPiles.clonePiles(gotPiles);
-        GoTPiles finalTempPiles = gotPiles.clonePiles(gotPiles);
+        GoTPiles tempPiles = gotPiles.clonePiles(gotPiles);
+//        GoTPiles initialTempPiles = gotPiles.clonePiles(gotPiles);
+//        GoTPiles finalTempPiles = gotPiles.clonePiles(gotPiles);
         Card temporaryCard = selected.clone();
 
         // If smartBot is winning, pass the turn
-        initialScore.battleScores(initialTempPiles, false);
+//        initialScore.battleScores(initialTempPiles, false);
+        initialScore.battleScores(tempPiles, false);
         if(initialScore.getWinningTeam() == playerIndex%GameOfThrones.nbTeams) {
             System.out.println("were already winning");
             return;
@@ -78,10 +80,12 @@ public class SmartBot extends BrainBot{
             return;
         }
 
-        finalTempPiles.transferCardToPile(temporaryCard, predictedPileIndex, true);
+//        finalTempPiles.transferCardToPile(temporaryCard, predictedPileIndex, true);
+        tempPiles.transferCardToPile(temporaryCard, predictedPileIndex, true);
 
         System.out.println("Scores before battling: " + initialScore.getScores()[0] +" "+ initialScore.getScores()[1]);
-        finalScore.battleScores(finalTempPiles, false);
+        finalScore.battleScores(tempPiles, false);
+//        finalScore.battleScores(finalTempPiles, false);
         System.out.println("Scores after battling: " + finalScore.getScores()[0] +" "+ finalScore.getScores()[1]);
         System.out.println("Winner: " + finalScore.getWinningTeam());
 
