@@ -86,11 +86,6 @@ public class GameLogic {
 
             // Select a card from hand
             players[nextPlayer].playSuit(got, nextPlayer, false, hands);
-            if(players[nextPlayer].getPlayerType() == "smart") {
-                if(got.getSelected().isEmpty()) {
-                    System.out.println("NO CARDS SELECTED");
-                }
-            }
 
             if (got.getSelected().isPresent()) {
 
@@ -99,6 +94,7 @@ public class GameLogic {
                 try {
                     players[nextPlayer].playPile(got, gotPiles, got.getSelected().get(), nextPlayer);
                 } catch (BrokeRuleException e) {
+                    got.setStatusText("Invalid Play. Passing");
                     System.out.println("Invalid play");
                 }
 

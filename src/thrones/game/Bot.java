@@ -21,7 +21,6 @@ abstract public class Bot implements Player{
             }
         }
         if (shortListCards.isEmpty() || !isCharacter && GoTCard.getRandom().nextInt(3) == 0) {
-            System.out.println("PASS");
             got.setSelected(Optional.empty());
         } else {
             got.setSelected(Optional.of(shortListCards.get(GoTCard.getRandom().nextInt(shortListCards.size()))));

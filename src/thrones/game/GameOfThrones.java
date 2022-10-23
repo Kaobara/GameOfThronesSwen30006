@@ -117,22 +117,30 @@ public class GameOfThrones extends CardGame {
               properties = PropertiesLoader.loadPropertiesFile(args[0]);
         }
 
-        // Setup player types
-        playerTypes = new String[4];
-        for(int i = 0; i<4; i++) {
-            playerTypes[i] = properties.getProperty("players."+i);
-        }
-
-        // Setup watching time
-        GameOfThrones.watchingTime = Integer.parseInt(properties.getProperty("watchingTime"));
-        System.out.println("Watching Time = " + watchingTime);
-
         // Setup seeds
         String seedProp = properties.getProperty("seed");  //Seed property
         if (seedProp != null) { // Use property seed
-			  seed = Integer.parseInt(seedProp);
+            seed = Integer.parseInt(seedProp);
         } else { // and no property
-			  seed = new Random().nextInt(); // so randomise
+            seed = new Random().nextInt(); // so randomise
+        }
+        System.out.println("Seed = " + seed);
+
+        // Setup watching time
+        String watchingTimeProp = properties.getProperty("watchingTime");  //Seed property
+        if (watchingTimeProp != null) { // Use property seed
+            watchingTime = Integer.parseInt(watchingTimeProp);
+        } // else no property - set to default 500
+        System.out.println("Watching Time = " + watchingTime);
+
+        // Setup player types
+        playerTypes = new String[4];
+        for(int i = 0; i<4; i++) {
+            if(playerTypes[i] != null) {
+                playerTypes[i] = properties.getProperty("players."+i);
+            } else {
+                playerTypes[i] = "random";
+            }
         }
 
         new GameOfThrones();
