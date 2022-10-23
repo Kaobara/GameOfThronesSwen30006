@@ -2,7 +2,7 @@ package thrones.game;
 
 import ch.aplu.jcardgame.Card;
 /**
- * Template for SimpleBot and SmartBot.
+ * Template abstract class for SimpleBot and SmartBot.
  * Monday Team 7
  * @author: Mohamad Danielsyah Mahmud
  * @author: Khai Syuen Tan

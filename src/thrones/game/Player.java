@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 /**
- * Interface for player.
+ * Interface for player strategies.
  * Monday Team 7
  * @author: Mohamad Danielsyah Mahmud
  * @author: Khai Syuen Tan

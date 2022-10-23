@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 /**
- * Contains all the relevant attributes and methods related to card.
+ * Contains all the relevant attributes and methods related to any card.
  * Monday Team 7
  * @author: Mohamad Danielsyah Mahmud
  * @author: Khai Syuen Tan
