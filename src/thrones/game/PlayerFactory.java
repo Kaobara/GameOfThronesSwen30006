@@ -1,7 +1,13 @@
 package thrones.game;
 
 import ch.aplu.jcardgame.Hand;
-
+/**
+ * Handles the creation of players.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 public class PlayerFactory {
 
     // Setup so that playerFactory is a singleton

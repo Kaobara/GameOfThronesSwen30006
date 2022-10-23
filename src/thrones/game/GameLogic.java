@@ -2,7 +2,13 @@ package thrones.game;
 
 import ch.aplu.jcardgame.*;
 import java.util.Optional;
-
+/**
+ * Handles the logic of the game.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 public class GameLogic {
     private final int nbRounds = 3;
     private final int nbStartCards = 9;

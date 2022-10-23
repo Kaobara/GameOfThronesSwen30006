@@ -7,7 +7,13 @@ import ch.aplu.jcardgame.Hand;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-
+/**
+ * Contains all the relevant attributes and methods related to card.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 public class GoTCard {
     private static GoTCard gotCard;
     private GoTCard() {}

@@ -3,7 +3,13 @@ package thrones.game;
 import ch.aplu.jcardgame.*;
 
 import java.util.ArrayList;
-
+/**
+ * Contains the relevant attributes and methods for handling piles.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 public class GoTPiles {
     final int NB_PILES = 2;
     private Hand[] piles;

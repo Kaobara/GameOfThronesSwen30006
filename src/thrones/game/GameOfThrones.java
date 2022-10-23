@@ -7,7 +7,13 @@ import ch.aplu.jgamegrid.Actor;
 import utility.PropertiesLoader;
 
 import java.util.*;
-
+/**
+ * Main body which contains the setup of the game.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 @SuppressWarnings("serial")
 public class GameOfThrones extends CardGame {
     // setup game properties

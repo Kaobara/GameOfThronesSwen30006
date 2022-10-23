@@ -1,7 +1,13 @@
 package thrones.game;
 
 import ch.aplu.jcardgame.Card;
-
+/**
+ * Implementation of random bot.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 public class RandBot extends Bot{
     RandBot() {
         super();

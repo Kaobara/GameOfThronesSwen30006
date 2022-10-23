@@ -7,7 +7,13 @@ import ch.aplu.jgamegrid.Location;
 import ch.aplu.jgamegrid.TextActor;
 
 import java.awt.*;
-
+/**
+ * Handles all graphic related methods and attributes.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 public class GameGraphic {
 
     // Graphic Attributes

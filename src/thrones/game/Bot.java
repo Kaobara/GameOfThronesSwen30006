@@ -6,7 +6,13 @@ import ch.aplu.jcardgame.Hand;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Template abstract class for Bot strategies.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 abstract public class Bot implements Player{
     @Override
     // Select a random card from your hand. Same logic for all bots

@@ -4,7 +4,13 @@ import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 
 import java.util.Optional;
-
+/**
+ * Implementation of Human as a player in game.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 public class Human implements  Player{
     @Override
     public String getPlayerType() {

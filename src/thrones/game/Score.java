@@ -1,5 +1,11 @@
 package thrones.game;
-
+/**
+ * Contains relevant attributes and methods for handling scores counting.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 public class Score {
     private GameGraphic gameGraphic = new GameGraphic();
     private int [] scores;

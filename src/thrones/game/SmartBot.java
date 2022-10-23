@@ -6,7 +6,13 @@ import ch.aplu.jcardgame.Hand;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
+/**
+ * Implementation of smart bot.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 public class SmartBot extends BrainBot{
     private Hand knownMagicCards = new Hand(GoTCard.deck);
     private ArrayList<Integer> knownMagicCardsRanks = new ArrayList<>();

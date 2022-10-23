@@ -1,7 +1,13 @@
 package thrones.game;
 
 import ch.aplu.jcardgame.Card;
-
+/**
+ * Template for SimpleBot and SmartBot.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 abstract public class BrainBot extends Bot{
     // If selected card is diamond, select enemy team pile. Else, play on your pile
     protected int chooseCorrectPile(GoTPiles gotPiles, Card selected, int playerIndex) {

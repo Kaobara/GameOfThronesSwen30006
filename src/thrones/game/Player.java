@@ -6,7 +6,13 @@ import ch.aplu.jcardgame.Hand;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Interface for player.
+ * Monday Team 7
+ * @author: Mohamad Danielsyah Mahmud
+ * @author: Khai Syuen Tan
+ * @author: Bhavika Shrestha
+ */
 public interface Player {
     public String getPlayerType();
     public void playSuit(GameOfThrones got, int playerIndex, boolean isCharacter, Hand[] hands);
